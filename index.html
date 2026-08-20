@@ -12,12 +12,16 @@ body{background:#0f0f0f;color:#fff;padding-bottom:90px}
   background-size:cover;background-position:center;
   padding:35px 20px 25px;text-align:center;position:relative;
 }
-/* NEON STATUS ARRIBA DERECHA */
 .status-neon{
   position:absolute;top:14px;right:14px;
   padding:6px 14px;border-radius:20px;
   font-size:11px;font-weight:900;letter-spacing:1px;
   backdrop-filter:blur(10px);
+  animation: flotarNeon 3s ease-in-out infinite;
+}
+@keyframes flotarNeon{
+  0%,100%{transform:translateY(0px) scale(1)}
+  50%{transform:translateY(-3px) scale(1.03)}
 }
 .status-neon.abierto{
   background:rgba(0,0,0,.6);color:#fff;
@@ -29,81 +33,63 @@ body{background:#0f0f0f;color:#fff;padding-bottom:90px}
   border:1.5px solid #ef4444;
   box-shadow:0 0 12px #ef4444, 0 0 22px rgba(239,68,68,.6), inset 0 0 8px rgba(239,68,68,.3);
 }
-
-.logo-box{
-  width:90px;height:90px;background:#fff;border-radius:50%;margin:0 auto 14px;
-  display:flex;align-items:center;justify-content:center;overflow:hidden;
-  box-shadow:0 8px 25px rgba(0,0,0,.5);border:3px solid #ffcc00;
-}
+.logo-box{width:90px;height:90px;background:#fff;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 8px 25px rgba(0,0,0,.5);border:3px solid #ffcc00}
 .logo-box img{width:100%;height:100%;object-fit:cover}
-.restaurant-name{font-size:28px;font-weight:900;letter-spacing:.5px;text-transform:uppercase}
-.restaurant-name span{color:#ffcc00}
+.restaurant-name{font-size:28px;font-weight:900}.restaurant-name span{color:#ffcc00}
 .tagline{font-size:12px;letter-spacing:3px;color:#ccc;margin-top:4px;font-weight:700}
-
-.categories{
-  display:flex;gap:10px;overflow-x:auto;padding:16px 16px 6px;
-  scrollbar-width:none;position:sticky;top:0;z-index:10;
-  background:#0f0f0f;
-}
+.categories{display:flex;gap:10px;overflow-x:auto;padding:16px 16px 6px;scrollbar-width:none;position:sticky;top:0;z-index:10;background:#0f0f0f}
 .categories::-webkit-scrollbar{display:none}
-.cat-btn{
-  white-space:nowrap;padding:10px 18px;border-radius:25px;
-  border:1.5px solid #2a2a2a;background:#1c1c1c;color:#fff;
-  font-weight:800;font-size:13px;cursor:pointer;transition:.2s;
-}
+.cat-btn{white-space:nowrap;padding:10px 18px;border-radius:25px;border:1.5px solid #2a2a2a;background:#1c1c1c;color:#fff;font-weight:800;font-size:13px;cursor:pointer;transition:.2s}
 .cat-btn.active{background:#ffcc00;color:#111;border-color:#ffcc00;transform:scale(1.05)}
-
 .products{padding:16px;display:grid;gap:14px}
-.product-card{
-  background:#1c1c1c;border:1px solid #2a2a2a;border-radius:18px;
-  display:flex;overflow:hidden;animation:fadeIn.3s ease;
-}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.product-card{background:#1c1c1c;border:1px solid #2a2a2a;border-radius:18px;display:flex;overflow:hidden}
 .product-img{width:110px;height:110px;object-fit:cover;background:#2a2a2a;flex-shrink:0}
-.product-info{padding:12px 12px 10px;flex:1;display:flex;flex-direction:column}
+.product-info{padding:12px;flex:1;display:flex;flex-direction:column}
 .product-name{font-weight:900;font-size:15px}
 .product-desc{font-size:11px;color:#aaa;margin-top:3px;line-height:1.3}
 .product-bottom{margin-top:auto;display:flex;justify-content:space-between;align-items:center;padding-top:10px}
 .product-price{color:#ffcc00;font-weight:900;font-size:16px}
-
-/* CONTROLES CANTIDAD */
-.qty-control{
-  display:flex;align-items:center;background:#2a2a2a;border-radius:20px;padding:2px;
-  border:1px solid #3a3a3a;
-}
-.qty-btn{
-  width:28px;height:28px;border-radius:50%;border:none;
-  background:#ffcc00;color:#111;font-weight:900;font-size:16px;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;
-}
+.qty-control{display:flex;align-items:center;background:#2a2a2a;border-radius:20px;padding:2px;border:1px solid #3a3a3a}
+.qty-btn{width:28px;height:28px;border-radius:50%;border:none;background:#ffcc00;color:#111;font-weight:900;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .qty-num{width:28px;text-align:center;font-weight:900;font-size:13px}
 
-/* NAV INFERIOR */
-.bottom-nav{
-  position:fixed;bottom:0;left:0;right:0;max-width:500px;margin:0 auto;
-  background:#1c1c1c;border-top:1px solid #2a2a2a;
-  display:flex;justify-content:space-around;align-items:center;
-  padding:8px 10px 14px;z-index:100;border-radius:20px 20px 0 0;
-}
-.nav-item{
-  display:flex;flex-direction:column;align-items:center;gap:4px;
-  color:#777;font-size:10px;font-weight:800;letter-spacing:.5px;cursor:pointer;
-  background:none;border:none;min-width:60px;
-}
-.nav-item.active{color:#ffcc00}
-.nav-icon{font-size:22px}
+/* CARRITO MODAL */
+.cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:none;backdrop-filter:blur(4px)}
+.cart-overlay.show{display:block}
+.cart-modal{position:fixed;bottom:0;left:0;right:0;max-width:500px;margin:0 auto;background:#161616;border-radius:24px 24px 0 0;z-index:201;max-height:85vh;display:none;flex-direction:column;transform:translateY(100%);transition:.35s ease}
+.cart-modal.show{display:flex;transform:translateY(0)}
+.cart-header{padding:18px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #2a2a2a}
+.cart-title{font-weight:900;font-size:16px}
+.cart-close{background:#2a2a2a;border:none;width:30px;height:30px;border-radius:50%;color:#fff;font-weight:900;cursor:pointer}
+.cart-body{overflow-y:auto;padding:16px;flex:1}
+.cart-empty{text-align:center;padding:30px 0;color:#777;font-size:13px}
+.cart-item{display:flex;gap:12px;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:14px;padding:10px;margin-bottom:10px;align-items:center}
+.cart-item img{width:50px;height:50px;border-radius:10px;object-fit:cover}
+.cart-item-info{flex:1}
+.cart-item-name{font-weight:800;font-size:13px}
+.cart-item-price{font-size:12px;color:#ffcc00;font-weight:800;margin-top:2px}
+.cart-item-actions{display:flex;align-items:center;gap:8px}
+.cart-del{background:#2a2a2a;border:none;color:#ff4d4d;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:14px}
+.addons-title{font-weight:900;font-size:13px;margin:18px 0 10px;letter-spacing:.5px}
+.addons-scroll{display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;padding-bottom:8px}
+.addons-scroll::-webkit-scrollbar{display:none}
+.addon-card{min-width:110px;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:14px;padding:8px;text-align:center;cursor:pointer}
+.addon-card img{width:70px;height:70px;border-radius:10px;object-fit:cover}
+.addon-name{font-size:11px;font-weight:800;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.addon-price{font-size:11px;color:#ffcc00;font-weight:900;margin-top:2px}
+.cart-footer{padding:16px 20px;border-top:1px solid #2a2a2a;background:#1c1c1c;border-radius:0 0 0 0}
+.summary-row{display:flex;justify-content:space-between;font-size:12px;color:#aaa;margin-bottom:6px}
+.summary-row.total{color:#fff;font-weight:900;font-size:16px;margin-top:8px}
+.btn-pedir{width:100%;background:#ffcc00;color:#111;border:none;padding:14px;border-radius:14px;font-weight:900;font-size:14px;margin-top:12px;cursor:pointer}
+
+/* NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;max-width:500px;margin:0 auto;background:#1c1c1c;border-top:1px solid #2a2a2a;display:flex;justify-content:space-around;align-items:center;padding:8px 10px 14px;z-index:100;border-radius:20px 20px 0 0}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;color:#777;font-size:10px;font-weight:800;cursor:pointer;background:none;border:none;min-width:60px}
+.nav-item.active{color:#ffcc00}.nav-icon{font-size:22px}
 .nav-center-wrap{display:flex;flex-direction:column;align-items:center;cursor:pointer}
-.nav-center{
-  width:66px;height:66px;background:radial-gradient(circle at 30% 30%, #ffe27a, #ffcc00 40%, #e6a800);
-  border-radius:50%;display:flex;align-items:center;justify-content:center;
-  margin-top:-38px;border:4px solid #0f0f0f;
-  box-shadow:0 10px 25px rgba(255,204,0,.5), inset 0 2px 6px rgba(255,255,255,.6), inset 0 -4px 8px rgba(0,0,0,.3);
-}
-.nav-center-label{font-size:10px;font-weight:900;color:#ffcc00;margin-top:6px;letter-spacing:1.2px}
-.cart-badge{
-  position:absolute;top:-4px;right:6px;background:#E53935;color:#fff;
-  font-size:9px;font-weight:900;padding:2px 5px;border-radius:10px;min-width:16px;text-align:center;
-}
+.nav-center{width:66px;height:66px;background:radial-gradient(circle at 30% 30%, #ffe27a, #ffcc00 40%, #e6a800);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:-38px;border:4px solid #0f0f0f;box-shadow:0 10px 25px rgba(255,204,0,.5), inset 0 2px 6px rgba(255,255,255,.6)}
+.nav-center-label{font-size:10px;font-weight:900;color:#ffcc00;margin-top:6px}
+.cart-badge{position:absolute;top:-4px;right:6px;background:#E53935;color:#fff;font-size:9px;font-weight:900;padding:2px 5px;border-radius:10px;min-width:16px;text-align:center}
 .nav-item-wrapper{position:relative}
 </style>
 </head>
@@ -111,9 +97,7 @@ body{background:#0f0f0f;color:#fff;padding-bottom:90px}
 
 <div class="header">
   <div id="statusBadge" class="status-neon abierto">● ABIERTO</div>
-  <div class="logo-box">
-    <img id="logoImg" src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png" alt="logo">
-  </div>
+  <div class="logo-box"><img src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png"></div>
   <div class="restaurant-name">BURGER <span>KINGO</span></div>
   <div class="tagline">COMIDA RÁPIDA • DOLORES HIDALGO</div>
 </div>
@@ -121,29 +105,39 @@ body{background:#0f0f0f;color:#fff;padding-bottom:90px}
 <div class="categories" id="categories"></div>
 <div class="products" id="products"></div>
 
-<div class="bottom-nav">
-  <button class="nav-item active" onclick="irA('inicio')">
-    <div class="nav-icon">🏠</div>INICIO
-  </button>
+<!-- CARRITO -->
+<div class="cart-overlay" id="cartOverlay" onclick="cerrarCarrito()"></div>
+<div class="cart-modal" id="cartModal">
+  <div class="cart-header">
+    <div class="cart-title">🛒 Tu Pedido</div>
+    <button class="cart-close" onclick="cerrarCarrito()">✕</button>
+  </div>
+  <div class="cart-body">
+    <div id="cartList"></div>
 
-  <div class="nav-center-wrap" onclick="irA('admin')">
+    <div class="addons-title">¿AGREGAR ALGO MÁS? 👇</div>
+    <div class="addons-scroll" id="addonsScroll"></div>
+
+    <div style="height:12px"></div>
+  </div>
+  <div class="cart-footer">
+    <div class="summary-row"><span>Productos:</span><span id="resumenCant">0</span></div>
+    <div class="summary-row"><span>Subtotal:</span><span id="resumenSub">$0</span></div>
+    <div class="summary-row total"><span>Total:</span><span id="resumenTotal">$0</span></div>
+    <button class="btn-pedir" onclick="pedirWhats()">PEDIR POR WHATSAPP 📲</button>
+  </div>
+</div>
+
+<div class="bottom-nav">
+  <button class="nav-item active"><div class="nav-icon">🏠</div>INICIO</button>
+  <div class="nav-center-wrap" onclick="alert('Panel ADMIN con huella - aquí irá login')">
     <div class="nav-center">
-      <!-- HUELLA 3D SVG PROFESIONAL -->
-      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 2C9.5 2 7.5 3.8 7.5 6.2C7.5 7.2 7.8 8.1 8.3 8.9L12 19L15.7 8.9C16.2 8.1 16.5 7.2 16.5 6.2C16.5 3.8 14.5 2 12 2Z" fill="#111" opacity=".25"/>
-        <path d="M12 3.5C10.2 3.5 8.8 4.9 8.8 6.7C8.8 7.5 9.1 8.2 9.5 8.7L9.6 8.9L12 15.8L14.4 8.9L14.5 8.7C14.9 8.2 15.2 7.5 15.2 6.7C15.2 4.9 13.8 3.5 12 3.5Z" stroke="#111" stroke-width="1.6" stroke-linecap="round"/>
-        <path d="M8 9.5C7.2 9.5 6.5 10.1 6.5 11C6.5 11.7 6.8 12.3 7.3 12.7L12 20L16.7 12.7C17.2 12.3 17.5 11.7 17.5 11C17.5 10.1 16.8 9.5 16 9.5" stroke="#111" stroke-width="1.4" stroke-linecap="round"/>
-        <path d="M6 13C5 13 4.2 13.9 4.2 15C4.2 15.9 4.6 16.6 5.3 17L12 21.5L18.7 17C19.4 16.6 19.8 15.9 19.8 15C19.8 13.9 19 13 18 13" stroke="#111" stroke-width="1.4" stroke-linecap="round" opacity=".8"/>
-        <circle cx="12" cy="6.7" r="1.2" fill="#111"/>
-      </svg>
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none"><path d="M12 3.5C10.2 3.5 8.8 4.9 8.8 6.7C8.8 7.5 9.1 8.2 9.5 8.7L12 15.8L14.4 8.9C14.9 8.2 15.2 7.5 15.2 6.7C15.2 4.9 13.8 3.5 12 3.5Z" stroke="#111" stroke-width="1.6"/><path d="M8 9.5C7.2 9.5 6.5 10.1 6.5 11C6.5 11.7 6.8 12.3 7.3 12.7L12 20L16.7 12.7C17.2 12.3 17.5 11.7 17.5 11C17.5 10.1 16.8 9.5 16 9.5" stroke="#111" stroke-width="1.4"/><path d="M6 13C5 13 4.2 13.9 4.2 15C4.2 15.9 4.6 16.6 5.3 17L12 21.5L18.7 17C19.4 16.6 19.8 15.9 19.8 15C19.8 13.9 19 13 18 13" stroke="#111" stroke-width="1.4" opacity=".8"/><circle cx="12" cy="6.7" r="1.2" fill="#111"/></svg>
     </div>
     <div class="nav-center-label">ADMIN</div>
   </div>
-
   <div class="nav-item-wrapper">
-    <button class="nav-item" onclick="irA('carrito')">
-      <div class="nav-icon">🛒</div>CARRITO
-    </button>
+    <button class="nav-item" onclick="abrirCarrito()"><div class="nav-icon">🛒</div>CARRITO</button>
     <div class="cart-badge" id="cartCount">0</div>
   </div>
 </div>
@@ -151,105 +145,105 @@ body{background:#0f0f0f;color:#fff;padding-bottom:90px}
 <script>
 const menuData = {
   "Hamburguesas": [
-    {name:"Clásica Sencilla",desc:"Carne 100% res, queso americano, lechuga y jitomate",price:65,img:"https://images.unsplash.com/photo-1568909344668-6f14a07b56a0?w=300"},
-    {name:"Doble Queso",desc:"Doble carne, doble queso cheddar, tocino crujiente",price:95,img:"https://images.unsplash.com/photo-1550547660-d9450f859349?w=300"},
-    {name:"Hawaiana",desc:"Con piña, jamón, queso y aderezo especial",price:85,img:"https://images.unsplash.com/photo-1593246049226-ded77bf90326?w=300"}
+    {name:"Clásica Sencilla",desc:"Carne 100% res, queso americano",price:65,img:"https://images.unsplash.com/photo-1568909344668-6f14a07b56a0?w=300"},
+    {name:"Doble Queso",desc:"Doble carne, doble cheddar, tocino",price:95,img:"https://images.unsplash.com/photo-1550547660-d9450f859349?w=300"},
+    {name:"Hawaiana",desc:"Con piña, jamón, queso",price:85,img:"https://images.unsplash.com/photo-1593246049226-ded77bf90326?w=300"}
   ],
   "Hot Dogs": [
-    {name:"Hot Dog Clásico",desc:"Salchicha jumbo, mayonesa y catsup",price:35,img:"https://images.unsplash.com/photo-1551782450-a2132b4ba21d?w=300"},
-    {name:"Hot Dog Especial",desc:"Con tocino, queso derretido y papas",price:55,img:"https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=300"}
+    {name:"Hot Dog Clásico",desc:"Salchicha jumbo",price:35,img:"https://images.unsplash.com/photo-1551782450-a2132b4ba21d?w=300"},
+    {name:"Hot Dog Especial",desc:"Con tocino y queso",price:55,img:"https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=300"}
   ],
   "Papas y Snacks": [
-    {name:"Papas a la Francesa",desc:"Orden grande 250g con catsup",price:45,img:"https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=300"},
-    {name:"Salchipapas",desc:"Papas + salchicha + queso y salsas",price:65,img:"https://images.unsplash.com/photo-1585109649139-366815a0d713?w=300"}
+    {name:"Papas Francesa",desc:"Orden grande 250g",price:45,img:"https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=300"},
+    {name:"Salchipapas",desc:"Papas + salchicha + queso",price:65,img:"https://images.unsplash.com/photo-1585109649139-366815a0d713?w=300"}
   ],
   "Bebidas": [
-    {name:"Refresco 600ml",desc:"Coca, Sprite, Fanta, Manzanita",price:25,img:"https://images.unsplash.com/photo-1553456558-aff63285bdd1?w=300"},
-    {name:"Agua Fresca 1L",desc:"Horchata, Jamaica, Tamarindo",price:30,img:"https://images.unsplash.com/photo-1523677011781-c91d1bbe2f9e?w=300"}
-  ],
-  "Combos": [
-    {name:"Combo Personal",desc:"Hamburguesa clásica + papas + refresco",price:99,img:"https://images.unsplash.com/photo-1568909344668-6f14a07b56a0?w=300"},
-    {name:"Combo Familiar",desc:"4 hamburguesas + 2 papas grandes + 2L refresco",price:299,img:"https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=300"}
+    {name:"Refresco 600ml",desc:"Coca, Sprite, Fanta",price:25,img:"https://images.unsplash.com/photo-1553456558-aff63285bdd1?w=300"},
+    {name:"Agua Fresca 1L",desc:"Horchata, Jamaica",price:30,img:"https://images.unsplash.com/photo-1523677011781-c91d1bbe2f9e?w=300"}
   ]
 };
+const extras = [
+  {name:"Refresco",price:25,img:"https://images.unsplash.com/photo-1553456558-aff63285bdd1?w=200"},
+  {name:"Papas",price:45,img:"https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=200"},
+  {name:"Queso Extra",price:15,img:"https://images.unsplash.com/photo-1550547660-d9450f859349?w=200"},
+  {name:"Aderezo",price:10,img:"https://images.unsplash.com/photo-1585109649139-366815a0d713?w=200"},
+  {name:"Tocino",price:20,img:"https://images.unsplash.com/photo-1593246049226-ded77bf90326?w=200"}
+];
 
-const categoriesDiv = document.getElementById("categories");
-const productsDiv = document.getElementById("products");
 let categoriaActiva = Object.keys(menuData)[0];
-let carritoTotal = 0;
-let cantidades = {}; // guarda cantidad por producto
+let cantidades = {};
+let carrito = {};
 
 function renderCategorias(){
-  categoriesDiv.innerHTML="";
+  const div=document.getElementById("categories");div.innerHTML="";
   Object.keys(menuData).forEach(cat=>{
-    const btn=document.createElement("button");
-    btn.className="cat-btn"+(cat===categoriaActiva?" active":"");
-    btn.innerText=cat;
-    btn.onclick=()=>{categoriaActiva=cat;renderCategorias();renderProductos();};
-    categoriesDiv.appendChild(btn);
+    const b=document.createElement("button");b.className="cat-btn"+(cat===categoriaActiva?" active":"");b.innerText=cat;
+    b.onclick=()=>{categoriaActiva=cat;renderCategorias();renderProductos();};div.appendChild(b);
   });
 }
 function renderProductos(){
-  productsDiv.innerHTML="";
-  menuData[categoriaActiva].forEach((p, index)=>{
-    const id = categoriaActiva+"_"+index;
-    if(cantidades[id]===undefined) cantidades[id]=0;
-    const card=document.createElement("div");
-    card.className="product-card";
-    card.innerHTML=`
-      <img class="product-img" src="${p.img}" onerror="this.src='https://images.unsplash.com/photo-1550547660-d9450f859349?w=300'">
-      <div class="product-info">
-        <div class="product-name">${p.name}</div>
-        <div class="product-desc">${p.desc}</div>
-        <div class="product-bottom">
-          <div class="product-price">$${p.price}</div>
-          <div class="qty-control">
-            <button class="qty-btn" onclick="cambiarQty('${id}',-1)">−</button>
-            <div class="qty-num" id="qty_${id}">${cantidades[id]}</div>
-            <button class="qty-btn" onclick="cambiarQty('${id}',1)">+</button>
-          </div>
-        </div>
-      </div>
-    `;
-    productsDiv.appendChild(card);
+  const div=document.getElementById("products");div.innerHTML="";
+  menuData[categoriaActiva].forEach((p,i)=>{
+    const id=categoriaActiva+"_"+i;if(cantidades[id]===undefined) cantidades[id]=0;
+    const card=document.createElement("div");card.className="product-card";
+    card.innerHTML=`<img class="product-img" src="${p.img}"><div class="product-info"><div class="product-name">${p.name}</div><div class="product-desc">${p.desc}</div><div class="product-bottom"><div class="product-price">$${p.price}</div><div class="qty-control"><button class="qty-btn" onclick="cambiarQty('${id}',-1,'${p.name}',${p.price},'${p.img}')">−</button><div class="qty-num" id="qty_${id}">${cantidades[id]}</div><button class="qty-btn" onclick="cambiarQty('${id}',1,'${p.name}',${p.price},'${p.img}')">+</button></div></div></div>`;
+    div.appendChild(card);
   });
 }
-function cambiarQty(id, delta){
-  let actual = cantidades[id]||0;
-  actual+=delta;
-  if(actual<0) actual=0;
-  cantidades[id]=actual;
-  document.getElementById("qty_"+id).innerText=actual;
-  actualizarCarrito();
+function cambiarQty(id,delta,nombre,precio,img){
+  let actual=cantidades[id]||0;actual+=delta;if(actual<0)actual=0;cantidades[id]=actual;
+  const el=document.getElementById("qty_"+id);if(el)el.innerText=actual;
+  if(actual===0) delete carrito[id]; else carrito[id]={nombre,precio,img,cant:actual};
+  actualizarBadge();renderCart();
 }
-function actualizarCarrito(){
-  carritoTotal = Object.values(cantidades).reduce((a,b)=>a+b,0);
-  document.getElementById("cartCount").innerText=carritoTotal;
+function actualizarBadge(){
+  const total=Object.values(carrito).reduce((a,b)=>a+b.cant,0);
+  document.getElementById("cartCount").innerText=total;
 }
-
-// Lógica abierto/cerrado automática
-function checarHorario(){
-  const ahora = new Date();
-  const hora = ahora.getHours();
-  const abierto = hora >= 12 && hora < 23; // 12pm a 11pm
-  const badge = document.getElementById("statusBadge");
-  if(abierto){
-    badge.className="status-neon abierto";
-    badge.innerText="● ABIERTO";
-  }else{
-    badge.className="status-neon cerrado";
-    badge.innerText="● CERRADO";
+function renderCart(){
+  const list=document.getElementById("cartList");
+  const ids=Object.keys(carrito);
+  if(ids.length===0){list.innerHTML='<div class="cart-empty">Tu carrito está vacío 🛒<br>Agrega productos con +</div>';}
+  else{
+    list.innerHTML="";
+    ids.forEach(id=>{
+      const item=carrito[id];
+      const d=document.createElement("div");d.className="cart-item";
+      d.innerHTML=`<img src="${item.img}"><div class="cart-item-info"><div class="cart-item-name">${item.nombre} x${item.cant}</div><div class="cart-item-price">$${item.precio*item.cant}</div></div><div class="cart-item-actions"><div class="qty-control"><button class="qty-btn" onclick="cambiarQty('${id}',-1,'${item.nombre}',${item.precio},'${item.img}')">−</button><div class="qty-num">${item.cant}</div><button class="qty-btn" onclick="cambiarQty('${id}',1,'${item.nombre}',${item.precio},'${item.img}')">+</button></div><button class="cart-del" onclick="eliminar('${id}')">🗑️</button></div>`;
+      list.appendChild(d);
+    });
   }
-}
-checarHorario();
+  // resumen
+  const totalCant=Object.values(carrito).reduce((a,b)=>a+b.cant,0);
+  const sub=Object.values(carrito).reduce((a,b)=>a+(b.precio*b.cant),0);
+  document.getElementById("resumenCant").innerText=totalCant+" productos";
+  document.getElementById("resumenSub").innerText="$"+sub;
+  document.getElementById("resumenTotal").innerText="$"+sub;
 
-function irA(seccion){
-  if(seccion==="admin") alert("Aquí irá el panel ADMIN con huella");
-  if(seccion==="carrito") alert("Carrito total: "+carritoTotal+" productos. Aquí irá checkout WhatsApp");
-  if(seccion==="inicio") window.scrollTo({top:0,behavior:"smooth"});
+  // extras scroll
+  const addDiv=document.getElementById("addonsScroll");addDiv.innerHTML="";
+  extras.forEach(e=>{
+    const c=document.createElement("div");c.className="addon-card";
+    c.innerHTML=`<img src="${e.img}"><div class="addon-name">${e.name}</div><div class="addon-price">$${e.price}</div>`;
+    c.onclick=()=>{const idExtra="extra_"+e.name;if(!carrito[idExtra])carrito[idExtra]={nombre:e.name,precio:e.price,img:e.img,cant:0};carrito[idExtra].cant++;cantidades[idExtra]=(cantidades[idExtra]||0)+1;actualizarBadge();renderCart();renderProductos();};
+    addDiv.appendChild(c);
+  });
 }
-renderCategorias();
-renderProductos();
+function eliminar(id){delete carrito[id];cantidades[id]=0;const el=document.getElementById("qty_"+id);if(el)el.innerText=0;actualizarBadge();renderCart();}
+function abrirCarrito(){document.getElementById("cartOverlay").classList.add("show");document.getElementById("cartModal").classList.add("show");renderCart();}
+function cerrarCarrito(){document.getElementById("cartOverlay").classList.remove("show");document.getElementById("cartModal").classList.remove("show");}
+function pedirWhats(){
+  let msg="*PEDIDO BURGER KINGO* 🛵\n\n";
+  Object.values(carrito).forEach(i=>{msg+=`• ${i.nombre} x${i.cant} = $${i.precio*i.cant}\n`;});
+  const total=Object.values(carrito).reduce((a,b)=>a+(b.precio*b.cant),0);
+  msg+=`\n*Total: $${total}*\n`;msg+=`Cant productos: ${Object.values(carrito).reduce((a,b)=>a+b.cant,0)}`;
+  window.open("https://wa.me/?text="+encodeURIComponent(msg),"_blank");
+}
+function checarHorario(){
+  const h=new Date().getHours();const abierto=h>=12&&h<23;const badge=document.getElementById("statusBadge");
+  badge.className="status-neon "+(abierto?"abierto":"cerrado");badge.innerText=abierto?"● ABIERTO":"● CERRADO";
+}
+checarHorario();renderCategorias();renderProductos();renderCart();
 </script>
 </body>
 </html>
