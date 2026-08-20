@@ -6,12 +6,30 @@
 <title>Menú - Restaurante</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',system-ui,sans-serif}
-body{background:#0f0f0f;color:#fff;padding-bottom:85px}
+body{background:#0f0f0f;color:#fff;padding-bottom:90px}
 .header{
-  background:linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.9)), url('https://images.unsplash.com/photo-1550547660-d9450f859349?w=800');
+  background:linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.9)), url('https://images.unsplash.com/photo-1550547660-d9450f859349?w=800');
   background-size:cover;background-position:center;
-  padding:35px 20px 25px;text-align:center;
+  padding:35px 20px 25px;text-align:center;position:relative;
 }
+/* NEON STATUS ARRIBA DERECHA */
+.status-neon{
+  position:absolute;top:14px;right:14px;
+  padding:6px 14px;border-radius:20px;
+  font-size:11px;font-weight:900;letter-spacing:1px;
+  backdrop-filter:blur(10px);
+}
+.status-neon.abierto{
+  background:rgba(0,0,0,.6);color:#fff;
+  border:1.5px solid #22c55e;
+  box-shadow:0 0 12px #22c55e, 0 0 22px rgba(34,197,94,.6), inset 0 0 8px rgba(34,197,94,.3);
+}
+.status-neon.cerrado{
+  background:rgba(0,0,0,.7);color:#ff4d4d;
+  border:1.5px solid #ef4444;
+  box-shadow:0 0 12px #ef4444, 0 0 22px rgba(239,68,68,.6), inset 0 0 8px rgba(239,68,68,.3);
+}
+
 .logo-box{
   width:90px;height:90px;background:#fff;border-radius:50%;margin:0 auto 14px;
   display:flex;align-items:center;justify-content:center;overflow:hidden;
@@ -21,7 +39,6 @@ body{background:#0f0f0f;color:#fff;padding-bottom:85px}
 .restaurant-name{font-size:28px;font-weight:900;letter-spacing:.5px;text-transform:uppercase}
 .restaurant-name span{color:#ffcc00}
 .tagline{font-size:12px;letter-spacing:3px;color:#ccc;margin-top:4px;font-weight:700}
-.status{display:inline-flex;margin-top:12px;background:#22c55e;color:#fff;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:900;gap:6px;align-items:center}
 
 .categories{
   display:flex;gap:10px;overflow-x:auto;padding:16px 16px 6px;
@@ -46,9 +63,20 @@ body{background:#0f0f0f;color:#fff;padding-bottom:85px}
 .product-info{padding:12px 12px 10px;flex:1;display:flex;flex-direction:column}
 .product-name{font-weight:900;font-size:15px}
 .product-desc{font-size:11px;color:#aaa;margin-top:3px;line-height:1.3}
-.product-bottom{margin-top:auto;display:flex;justify-content:space-between;align-items:center;padding-top:8px}
+.product-bottom{margin-top:auto;display:flex;justify-content:space-between;align-items:center;padding-top:10px}
 .product-price{color:#ffcc00;font-weight:900;font-size:16px}
-.add-btn{background:#ffcc00;color:#111;border:none;padding:6px 14px;border-radius:20px;font-weight:900;font-size:12px;cursor:pointer}
+
+/* CONTROLES CANTIDAD */
+.qty-control{
+  display:flex;align-items:center;background:#2a2a2a;border-radius:20px;padding:2px;
+  border:1px solid #3a3a3a;
+}
+.qty-btn{
+  width:28px;height:28px;border-radius:50%;border:none;
+  background:#ffcc00;color:#111;font-weight:900;font-size:16px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+}
+.qty-num{width:28px;text-align:center;font-weight:900;font-size:13px}
 
 /* NAV INFERIOR */
 .bottom-nav{
@@ -64,15 +92,14 @@ body{background:#0f0f0f;color:#fff;padding-bottom:85px}
 }
 .nav-item.active{color:#ffcc00}
 .nav-icon{font-size:22px}
+.nav-center-wrap{display:flex;flex-direction:column;align-items:center;cursor:pointer}
 .nav-center{
-  width:62px;height:62px;background:#ffcc00;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  margin-top:-35px;border:4px solid #0f0f0f;
-  box-shadow:0 8px 20px rgba(255,204,0,.4);cursor:pointer;
+  width:66px;height:66px;background:radial-gradient(circle at 30% 30%, #ffe27a, #ffcc00 40%, #e6a800);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  margin-top:-38px;border:4px solid #0f0f0f;
+  box-shadow:0 10px 25px rgba(255,204,0,.5), inset 0 2px 6px rgba(255,255,255,.6), inset 0 -4px 8px rgba(0,0,0,.3);
 }
-.nav-center span{font-size:26px}
-.nav-center-label{font-size:10px;font-weight:900;color:#ffcc00;margin-top:4px;letter-spacing:1px}
-
+.nav-center-label{font-size:10px;font-weight:900;color:#ffcc00;margin-top:6px;letter-spacing:1.2px}
 .cart-badge{
   position:absolute;top:-4px;right:6px;background:#E53935;color:#fff;
   font-size:9px;font-weight:900;padding:2px 5px;border-radius:10px;min-width:16px;text-align:center;
@@ -83,35 +110,39 @@ body{background:#0f0f0f;color:#fff;padding-bottom:85px}
 <body>
 
 <div class="header">
+  <div id="statusBadge" class="status-neon abierto">● ABIERTO</div>
   <div class="logo-box">
     <img id="logoImg" src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png" alt="logo">
   </div>
-  <div class="restaurant-name" id="restName">BURGER <span>KINGO</span></div>
+  <div class="restaurant-name">BURGER <span>KINGO</span></div>
   <div class="tagline">COMIDA RÁPIDA • DOLORES HIDALGO</div>
-  <div class="status">● ABIERTO AHORA - 12:00 PM a 11:00 PM</div>
 </div>
 
 <div class="categories" id="categories"></div>
 <div class="products" id="products"></div>
 
-<!-- NAV INFERIOR -->
 <div class="bottom-nav">
   <button class="nav-item active" onclick="irA('inicio')">
-    <div class="nav-icon">🏠</div>
-    INICIO
+    <div class="nav-icon">🏠</div>INICIO
   </button>
 
-  <div style="display:flex;flex-direction:column;align-items:center" onclick="irA('admin')">
+  <div class="nav-center-wrap" onclick="irA('admin')">
     <div class="nav-center">
-      <span>👤</span>
+      <!-- HUELLA 3D SVG PROFESIONAL -->
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C9.5 2 7.5 3.8 7.5 6.2C7.5 7.2 7.8 8.1 8.3 8.9L12 19L15.7 8.9C16.2 8.1 16.5 7.2 16.5 6.2C16.5 3.8 14.5 2 12 2Z" fill="#111" opacity=".25"/>
+        <path d="M12 3.5C10.2 3.5 8.8 4.9 8.8 6.7C8.8 7.5 9.1 8.2 9.5 8.7L9.6 8.9L12 15.8L14.4 8.9L14.5 8.7C14.9 8.2 15.2 7.5 15.2 6.7C15.2 4.9 13.8 3.5 12 3.5Z" stroke="#111" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M8 9.5C7.2 9.5 6.5 10.1 6.5 11C6.5 11.7 6.8 12.3 7.3 12.7L12 20L16.7 12.7C17.2 12.3 17.5 11.7 17.5 11C17.5 10.1 16.8 9.5 16 9.5" stroke="#111" stroke-width="1.4" stroke-linecap="round"/>
+        <path d="M6 13C5 13 4.2 13.9 4.2 15C4.2 15.9 4.6 16.6 5.3 17L12 21.5L18.7 17C19.4 16.6 19.8 15.9 19.8 15C19.8 13.9 19 13 18 13" stroke="#111" stroke-width="1.4" stroke-linecap="round" opacity=".8"/>
+        <circle cx="12" cy="6.7" r="1.2" fill="#111"/>
+      </svg>
     </div>
     <div class="nav-center-label">ADMIN</div>
   </div>
 
   <div class="nav-item-wrapper">
     <button class="nav-item" onclick="irA('carrito')">
-      <div class="nav-icon">🛒</div>
-      CARRITO
+      <div class="nav-icon">🛒</div>CARRITO
     </button>
     <div class="cart-badge" id="cartCount">0</div>
   </div>
@@ -145,7 +176,8 @@ const menuData = {
 const categoriesDiv = document.getElementById("categories");
 const productsDiv = document.getElementById("products");
 let categoriaActiva = Object.keys(menuData)[0];
-let carrito = 0;
+let carritoTotal = 0;
+let cantidades = {}; // guarda cantidad por producto
 
 function renderCategorias(){
   categoriesDiv.innerHTML="";
@@ -159,7 +191,9 @@ function renderCategorias(){
 }
 function renderProductos(){
   productsDiv.innerHTML="";
-  menuData[categoriaActiva].forEach(p=>{
+  menuData[categoriaActiva].forEach((p, index)=>{
+    const id = categoriaActiva+"_"+index;
+    if(cantidades[id]===undefined) cantidades[id]=0;
     const card=document.createElement("div");
     card.className="product-card";
     card.innerHTML=`
@@ -169,20 +203,49 @@ function renderProductos(){
         <div class="product-desc">${p.desc}</div>
         <div class="product-bottom">
           <div class="product-price">$${p.price}</div>
-          <button class="add-btn" onclick="agregarCarrito()">AGREGAR</button>
+          <div class="qty-control">
+            <button class="qty-btn" onclick="cambiarQty('${id}',-1)">−</button>
+            <div class="qty-num" id="qty_${id}">${cantidades[id]}</div>
+            <button class="qty-btn" onclick="cambiarQty('${id}',1)">+</button>
+          </div>
         </div>
       </div>
     `;
     productsDiv.appendChild(card);
   });
 }
-function agregarCarrito(){
-  carrito++;
-  document.getElementById("cartCount").innerText=carrito;
+function cambiarQty(id, delta){
+  let actual = cantidades[id]||0;
+  actual+=delta;
+  if(actual<0) actual=0;
+  cantidades[id]=actual;
+  document.getElementById("qty_"+id).innerText=actual;
+  actualizarCarrito();
 }
+function actualizarCarrito(){
+  carritoTotal = Object.values(cantidades).reduce((a,b)=>a+b,0);
+  document.getElementById("cartCount").innerText=carritoTotal;
+}
+
+// Lógica abierto/cerrado automática
+function checarHorario(){
+  const ahora = new Date();
+  const hora = ahora.getHours();
+  const abierto = hora >= 12 && hora < 23; // 12pm a 11pm
+  const badge = document.getElementById("statusBadge");
+  if(abierto){
+    badge.className="status-neon abierto";
+    badge.innerText="● ABIERTO";
+  }else{
+    badge.className="status-neon cerrado";
+    badge.innerText="● CERRADO";
+  }
+}
+checarHorario();
+
 function irA(seccion){
-  if(seccion==="admin") alert("Aquí irá el panel ADMIN para editar productos, precios y logo");
-  if(seccion==="carrito") alert("Aquí irá el carrito con total y botón WhatsApp. Carrito actual: "+carrito+" productos");
+  if(seccion==="admin") alert("Aquí irá el panel ADMIN con huella");
+  if(seccion==="carrito") alert("Carrito total: "+carritoTotal+" productos. Aquí irá checkout WhatsApp");
   if(seccion==="inicio") window.scrollTo({top:0,behavior:"smooth"});
 }
 renderCategorias();
