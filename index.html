@@ -6,7 +6,7 @@
 <title>Menú - Restaurante</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',system-ui,sans-serif}
-body{background:#0f0f0f;color:#fff}
+body{background:#0f0f0f;color:#fff;padding-bottom:85px}
 .header{
   background:linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.9)), url('https://images.unsplash.com/photo-1550547660-d9450f859349?w=800');
   background-size:cover;background-position:center;
@@ -50,7 +50,34 @@ body{background:#0f0f0f;color:#fff}
 .product-price{color:#ffcc00;font-weight:900;font-size:16px}
 .add-btn{background:#ffcc00;color:#111;border:none;padding:6px 14px;border-radius:20px;font-weight:900;font-size:12px;cursor:pointer}
 
-.footer{padding:30px 20px;text-align:center;color:#666;font-size:11px;letter-spacing:1px}
+/* NAV INFERIOR */
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;max-width:500px;margin:0 auto;
+  background:#1c1c1c;border-top:1px solid #2a2a2a;
+  display:flex;justify-content:space-around;align-items:center;
+  padding:8px 10px 14px;z-index:100;border-radius:20px 20px 0 0;
+}
+.nav-item{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  color:#777;font-size:10px;font-weight:800;letter-spacing:.5px;cursor:pointer;
+  background:none;border:none;min-width:60px;
+}
+.nav-item.active{color:#ffcc00}
+.nav-icon{font-size:22px}
+.nav-center{
+  width:62px;height:62px;background:#ffcc00;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  margin-top:-35px;border:4px solid #0f0f0f;
+  box-shadow:0 8px 20px rgba(255,204,0,.4);cursor:pointer;
+}
+.nav-center span{font-size:26px}
+.nav-center-label{font-size:10px;font-weight:900;color:#ffcc00;margin-top:4px;letter-spacing:1px}
+
+.cart-badge{
+  position:absolute;top:-4px;right:6px;background:#E53935;color:#fff;
+  font-size:9px;font-weight:900;padding:2px 5px;border-radius:10px;min-width:16px;text-align:center;
+}
+.nav-item-wrapper{position:relative}
 </style>
 </head>
 <body>
@@ -67,7 +94,28 @@ body{background:#0f0f0f;color:#fff}
 <div class="categories" id="categories"></div>
 <div class="products" id="products"></div>
 
-<div class="footer">MENÚ DIGITAL • HECHO PARA WHATSAPP</div>
+<!-- NAV INFERIOR -->
+<div class="bottom-nav">
+  <button class="nav-item active" onclick="irA('inicio')">
+    <div class="nav-icon">🏠</div>
+    INICIO
+  </button>
+
+  <div style="display:flex;flex-direction:column;align-items:center" onclick="irA('admin')">
+    <div class="nav-center">
+      <span>👤</span>
+    </div>
+    <div class="nav-center-label">ADMIN</div>
+  </div>
+
+  <div class="nav-item-wrapper">
+    <button class="nav-item" onclick="irA('carrito')">
+      <div class="nav-icon">🛒</div>
+      CARRITO
+    </button>
+    <div class="cart-badge" id="cartCount">0</div>
+  </div>
+</div>
 
 <script>
 const menuData = {
@@ -77,8 +125,8 @@ const menuData = {
     {name:"Hawaiana",desc:"Con piña, jamón, queso y aderezo especial",price:85,img:"https://images.unsplash.com/photo-1593246049226-ded77bf90326?w=300"}
   ],
   "Hot Dogs": [
-    {name:"Hot Dog Clásico",desc:"Salchicha jumbo, mayonesa y catsup",price:35,img:"https://images.unsplash.com/photo-1612392062631-94dd858cba4a?w=300"},
-    {name:"Hot Dog Especial",desc:"Con tocino, queso derretido y papas",price:55,img:"https://images.unsplash.com/photo-1612392062631-94dd858cba4a?w=300"}
+    {name:"Hot Dog Clásico",desc:"Salchicha jumbo, mayonesa y catsup",price:35,img:"https://images.unsplash.com/photo-1551782450-a2132b4ba21d?w=300"},
+    {name:"Hot Dog Especial",desc:"Con tocino, queso derretido y papas",price:55,img:"https://images.unsplash.com/photo-1599599810769-bcde5a160d32?w=300"}
   ],
   "Papas y Snacks": [
     {name:"Papas a la Francesa",desc:"Orden grande 250g con catsup",price:45,img:"https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=300"},
@@ -97,6 +145,7 @@ const menuData = {
 const categoriesDiv = document.getElementById("categories");
 const productsDiv = document.getElementById("products");
 let categoriaActiva = Object.keys(menuData)[0];
+let carrito = 0;
 
 function renderCategorias(){
   categoriesDiv.innerHTML="";
@@ -114,27 +163,30 @@ function renderProductos(){
     const card=document.createElement("div");
     card.className="product-card";
     card.innerHTML=`
-      <img class="product-img" src="${p.img}">
+      <img class="product-img" src="${p.img}" onerror="this.src='https://images.unsplash.com/photo-1550547660-d9450f859349?w=300'">
       <div class="product-info">
         <div class="product-name">${p.name}</div>
         <div class="product-desc">${p.desc}</div>
         <div class="product-bottom">
           <div class="product-price">$${p.price}</div>
-          <button class="add-btn">VER</button>
+          <button class="add-btn" onclick="agregarCarrito()">AGREGAR</button>
         </div>
       </div>
     `;
     productsDiv.appendChild(card);
   });
 }
+function agregarCarrito(){
+  carrito++;
+  document.getElementById("cartCount").innerText=carrito;
+}
+function irA(seccion){
+  if(seccion==="admin") alert("Aquí irá el panel ADMIN para editar productos, precios y logo");
+  if(seccion==="carrito") alert("Aquí irá el carrito con total y botón WhatsApp. Carrito actual: "+carrito+" productos");
+  if(seccion==="inicio") window.scrollTo({top:0,behavior:"smooth"});
+}
 renderCategorias();
 renderProductos();
-
-// Para cambiar fácil logo y nombre luego:
-function cambiarRestaurante(nombre, logoUrl){
-  document.getElementById("restName").innerHTML=nombre;
-  document.getElementById("logoImg").src=logoUrl;
-}
 </script>
 </body>
 </html>
