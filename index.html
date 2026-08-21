@@ -87,8 +87,8 @@ body{background:#0f0f0f;color:#fff;padding-bottom:90px}
 <button class="nav-item active"><div>🏠</div>INICIO</button>
 <div class="nav-center-wrap" onclick="abrirAdmin()"><div class="nav-center"><img id="adminLogoImg" src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png"></div><div class="nav-center-label">ADMIN</div></div>
 <div class="nav-item-wrapper"><button class="nav-item" onclick="abrirCarrito()"><div>🛒</div>CARRITO</button><div class="cart-badge" id="cartCount">0</div></div>
-  </div>
-  <div class="elegant-overlay" id="elegantOverlay" onclick="cerrarElegant()"><div class="elegant-card" onclick="event.stopPropagation()"><div class="elegant-icon">📋</div><div class="elegant-title" id="elegantTitle">Faltan datos</div><div class="elegant-text" id="elegantText">...</div><button class="elegant-btn" onclick="cerrarElegant()">Entendido</button></div></div>
+</div>
+<div class="elegant-overlay" id="elegantOverlay" onclick="cerrarElegant()"><div class="elegant-card" onclick="event.stopPropagation()"><div class="elegant-icon">📋</div><div class="elegant-title" id="elegantTitle">Faltan datos</div><div class="elegant-text" id="elegantText">...</div><button class="elegant-btn" onclick="cerrarElegant()">Entendido</button></div></div>
 <div class="login-overlay" id="loginOverlay"><div class="login-card"><div class="login-logo"><img id="loginLogoImg" src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png"></div><div class="login-title" id="loginTitle">BURGER KINGO</div><div class="login-sub">PANEL ADMINISTRADOR</div><input id="loginUser" class="login-input" placeholder="👤 Usuario"><input id="loginPass" type="password" class="login-input" placeholder="🔒 Contraseña"><button class="login-btn" onclick="hacerLogin()">Ingresar →</button><button onclick="cerrarLogin()" style="margin-top:12px;background:none;border:none;color:#888;font-size:12px;font-weight:700;cursor:pointer">Cancelar</button></div></div>
 <style>
 .checkout-modal{position:fixed;inset:0;z-index:300;display:none;flex-direction:column;max-width:500px;margin:0 auto;background:#f8f8f8;overflow-y:auto}.checkout-modal.show{display:flex}
@@ -200,18 +200,20 @@ body{background:#0f0f0f;color:#fff;padding-bottom:90px}
 <button class="admin-btn btn-yellow" onclick="guardarAjustes()">💾 Guardar en la Nube ☁️</button>
 </div>
 <div id="adminPedidos" style="display:none"><div id="listaPedidosAdmin"></div></div>
+
 <div id="adminStats" style="display:none">
 <div class="stat-grid"><div class="stat-card"><div class="stat-num" id="statTotalPed">0</div><div class="stat-label">PEDIDOS</div></div><div class="stat-card"><div class="stat-num" id="statVentas">$0</div><div class="stat-label">VENTAS</div></div><div class="stat-card"><div class="stat-num" id="statProdVend">0</div><div class="stat-label">PRODUCTOS</div></div><div class="stat-card"><div class="stat-num" id="statTicket">$0</div><div class="stat-label">TICKET PROM</div></div></div>
 <div class="admin-card"><div style="font-weight:900;font-size:12px">🏆 Más vendido</div><div id="statTopProd" style="margin-top:8px;font-size:13px;color:#111">--</div></div>
 
-<div class="admin-card" style="border:2px solid #111;background:#111">
-<div style="font-weight:900;font-size:13px;color:#fff;margin-bottom:4px">🔒 HISTORIAL PRIVADO DE CLIENTES</div>
-<div style="font-size:10px;color:#888;margin-bottom:12px">Ingresa contraseña para ver teléfonos</div>
+<div class="admin-card" style="border:2px solid #111;background:#0f0f0f">
+<div style="font-weight:900;font-size:13px;color:#fff;margin-bottom:2px">⚙️ Panel desarrollador</div>
+<div style="font-size:10px;color:#666;margin-bottom:12px">Acceso técnico / logs</div>
 <div style="display:flex;gap:8px">
-<input id="passClientes" type="password" class="admin-input" placeholder="Contraseña" style="margin-top:0;flex:1;background:#222;color:#fff;border-color:#333">
-<button onclick="verClientesPrivados()" style="background:var(--theme);color:#111;border:none;padding:0 18px;border-radius:10px;font-weight:900;cursor:pointer">Ingresar</button>
+<input id="passClientes" type="password" class="admin-input" placeholder="Código dev" style="margin-top:0;flex:1;background:#1a1a1a;color:#fff;border-color:#2a2a2a">
+<button onclick="verClientesPrivados()" style="background:#2a2a2a;color:#fff;border:1px solid #3a3a3a;padding:0 18px;border-radius:10px;font-weight:900;cursor:pointer">Entrar</button>
 </div>
 <div id="listaClientesPrivada" style="display:none;margin-top:14px;max-height:400px;overflow-y:auto"></div>
+</div>
 </div>
 
 </div>
@@ -219,7 +221,6 @@ body{background:#0f0f0f;color:#fff;padding-bottom:90px}
 </div>
 
 <script>
-// CONFIG REAL
 const firebaseConfig = {
   apiKey: "AIzaSyDvetl-4f68ykb5GpGSZtCAvOeetKmnh-4",
   authDomain: "menu-digital-12e66.firebaseapp.com",
@@ -319,7 +320,24 @@ window.toggleAbierto=function(){config.abierto=!config.abierto;const sw=document
 window.actualizarDirRest=function(){const dir=document.getElementById("ajDirRest").value.trim();if(dir.length<6){showElegant("Dirección incompleta 📍","Escribe la dirección completa.");return;}fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(dir)}&limit=1`).then(r=>r.json()).then(d=>{if(d.length>0){restauranteCoords={lat:parseFloat(d[0].lat),lng:parseFloat(d[0].lon)};db.ref('coords').set(restauranteCoords);document.getElementById("coordsActual").innerText=restauranteCoords.lat.toFixed(5)+", "+restauranteCoords.lng.toFixed(5);showElegant("Ubicación actualizada ✅","Ruta real actualizada.");}else{showElegant("No encontrada","No encontramos esa dirección.");}});}
 window.guardarAjustes=function(){const newUser=document.getElementById("ajUser").value.trim();const newPass=document.getElementById("ajPass").value.trim();if(newUser&&newPass){adminCred={user:newUser,pass:newPass};db.ref('admin').set(adminCred);}config.whatsapp=document.getElementById("ajWhatsapp").value.trim()||config.whatsapp;config.nombre=document.getElementById("ajNombre").value.trim()||config.nombre;if(tempLogo)config.logo=tempLogo;if(tempPortada)config.portada=tempPortada;config.color=document.getElementById("ajColor").value||config.color;config.direccionRest=document.getElementById("ajDirRest").value.trim()||config.direccionRest;db.ref('config').set(config);db.ref('coords').set(restauranteCoords);showElegant("Guardado en la nube ☁️","Todo actualizado para todos en tiempo real.");}
 function cargarPedidos(){const div=document.getElementById("listaPedidosAdmin");db.ref('pedidos').on('value',snap=>{const data=snap.val();if(!data){div.innerHTML='<div style="text-align:center;padding:20px;color:#888">Sin pedidos aún</div>';return;}const pedidos=Object.values(data).reverse();div.innerHTML="";pedidos.forEach(p=>{div.innerHTML+=`<div class="pedido-item"><div class="pedido-top"><span>#${p.id.toString().slice(-6)} - ${p.cliente}</span><span>$${p.total}</span></div><div style="font-size:11px;color:#666;margin-top:6px">${p.fecha} - ${p.dir}</div><div style="font-size:11px;color:#333;margin-top:6px">${p.productos.map(pr=>pr.nombre+' x'+pr.cant).join(', ')}</div></div>`;});});}
-window.verClientesPrivados=function(){const pass=document.getElementById("passClientes").value;if(pass!==PASS_CLIENTES_PRIVADA){showElegant("Contraseña incorrecta 🔒","La clave es 1234");return;}const cont=document.getElementById("listaClientesPrivada");cont.style.display="block";cont.innerHTML='<div style="text-align:center;padding:10px;color:#888;font-size:11px">Cargando...</div>';db.ref('pedidos').once('value',snap=>{const data=snap.val();if(!data){cont.innerHTML='<div style="text-align:center;padding:10px;color:#888">Sin clientes aún</div>';return;}const pedidos=Object.values(data).reverse();let html="";pedidos.forEach(p=>{html+=`<div style="background:#1e1e1e;border:1px solid #2a2a2a;border-radius:10px;padding:10px;margin-bottom:8px"><div style="display:flex;justify-content:space-between"><span style="font-weight:900;font-size:12px;color:#fff">${p.cliente||'Sin nombre'}</span><span style="font-size:10px;color:#888">${p.fecha||''}</span></div><div style="font-size:12px;color:var(--theme);font-weight:800;margin-top:4px">📱 ${p.tel||'Sin número'} - ${p.cliente||''}</div><div style="font-size:10px;color:#aaa;margin-top:4px">🏠 ${p.dir||''}</div><div style="font-size:10px;color:#ccc;margin-top:4px;border-top:1px dashed #2a2a2a;padding-top:4px">Pedido: ${(p.productos||[]).map(pr=>pr.nombre+' x'+pr.cant).join(', ')} - $${p.total||0}</div></div>`;});cont.innerHTML=html;});}
+
+window.verClientesPrivados=function(){
+const pass=document.getElementById("passClientes").value;
+if(pass!==PASS_CLIENTES_PRIVADA){showElegant("Código incorrecto 🔒","Código dev inválido");return;}
+const cont=document.getElementById("listaClientesPrivada");
+cont.style.display="block";
+cont.innerHTML='<div style="text-align:center;padding:10px;color:#888;font-size:11px">Cargando logs...</div>';
+db.ref('pedidos').once('value',snap=>{
+const data=snap.val();
+if(!data){cont.innerHTML='<div style="text-align:center;padding:10px;color:#888">Sin registros</div>';return;}
+const pedidos=Object.values(data).reverse();
+let html="";
+pedidos.forEach(p=>{
+html+=`<div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;padding:10px;margin-bottom:8px"><div style="display:flex;justify-content:space-between"><span style="font-weight:900;font-size:12px;color:#fff">${p.cliente||'Sin nombre'}</span><span style="font-size:10px;color:#666">${p.fecha||''}</span></div><div style="font-size:12px;color:#ffcc00;font-weight:800;margin-top:4px">📱 ${p.tel||'Sin número'}</div><div style="font-size:10px;color:#888;margin-top:4px">🏠 ${p.dir||''}</div><div style="font-size:10px;color:#555;margin-top:4px;border-top:1px dashed #2a2a2a;padding-top:4px">Total $${p.total||0} - ${(p.productos||[]).map(pr=>pr.nombre+' x'+pr.cant).join(', ')}</div></div>`;
+});
+cont.innerHTML=html;
+});}
+
 function cargarStats(){db.ref('pedidos').on('value',snap=>{const data=snap.val();const pedidos=data?Object.values(data):[];let totalV=pedidos.reduce((a,b)=>a+b.total,0);let totalP=pedidos.reduce((a,b)=>a+b.productos.reduce((x,y)=>x+y.cant,0),0);document.getElementById("statTotalPed").innerText=pedidos.length;document.getElementById("statVentas").innerText="$"+totalV;document.getElementById("statProdVend").innerText=totalP;document.getElementById("statTicket").innerText=pedidos.length? "$"+Math.round(totalV/pedidos.length):"$0";let conteo={};pedidos.forEach(p=>{p.productos.forEach(pr=>{conteo[pr.nombre]=(conteo[pr.nombre]||0)+pr.cant;});});let top=Object.entries(conteo).sort((a,b)=>b[1]-a[1])[0];document.getElementById("statTopProd").innerText=top? top[0]+" ("+top[1]+" vendidos)" : "--";});}
 function cargarAdmin(){const sel=document.getElementById("catSelect");sel.innerHTML='<option value="">-- Categorías --</option>';Object.keys(menuData).forEach(c=>{sel.innerHTML+=`<option value="${c}">${c}</option>`;});renderListaAdmin();document.getElementById("ajWhatsapp").value=config.whatsapp;document.getElementById("ajNombre").value=config.nombre;document.getElementById("ajColor").value=config.color;document.getElementById("ajDirRest").value=config.direccionRest;document.getElementById("ajUser").value=adminCred.user;document.getElementById("ajPass").value=adminCred.pass;document.getElementById("coordsActual").innerText=restauranteCoords.lat.toFixed(5)+", "+restauranteCoords.lng.toFixed(5);renderHorario();}
 function renderListaAdmin(){const div=document.getElementById("listaProductosAdmin");div.innerHTML="";Object.keys(menuData).forEach(cat=>{div.innerHTML+=`<div style="font-weight:900;font-size:12px;margin:14px 0 6px;color:#111">${cat.toUpperCase()}</div>`;menuData[cat].forEach((p,idx)=>{const safeCat=cat.replace(/'/g,"\\'");const disp=p.disp!==false;div.innerHTML+=`<div class="product-admin-item"><img src="${p.img}"><div style="flex:1"><div style="font-weight:800;font-size:13px;color:#111">${p.name}</div><div style="font-size:11px;color:#666">$${p.price}</div></div><div class="admin-actions"><button class="btn-disp ${disp?'on':'off'}" onclick="toggleDisp('${safeCat}',${idx})">${disp?'🟢':'🔴'}</button><button class="btn-edit" onclick="editarProd('${safeCat}',${idx})">✏️</button><button class="btn-del" onclick="borrarProd('${safeCat}',${idx})">🗑️</button></div></div>`;});});}
