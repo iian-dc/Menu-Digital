@@ -22,8 +22,9 @@ body{background:#0f0f0f;color:#fff;padding-bottom:90px}
 .logo-box img{width:100%;height:100%;object-fit:cover}
 .restaurant-name{font-size:28px;font-weight:900}.restaurant-name span{color:var(--theme)}
 .tagline{font-size:12px;letter-spacing:3px;color:#ccc;margin-top:4px;font-weight:700}
-.categories{display:flex;gap:10px;overflow-x:auto;padding:16px;position:sticky;top:0;background:#0f0f0f;z-index:10}
-.cat-btn{white-space:nowrap;padding:10px 18px;border-radius:25px;border:1.5px solid #2a2a2a;background:#1c1c1c;color:#fff;font-weight:800;font-size:13px;cursor:pointer}
+.categories{display:flex;gap:10px;overflow-x:auto;padding:16px;position:sticky;top:0;background:#0f0f0f;z-index:10;scrollbar-width:none}
+.categories::-webkit-scrollbar{display:none}
+.cat-btn{white-space:nowrap;padding:10px 18px;border-radius:25px;border:1.5px solid #2a2a2a;background:#1c1c1c;color:#fff;font-weight:800;font-size:13px;cursor:pointer;flex:0 0 auto}
 .cat-btn.active{background:var(--theme);color:#111}
 .products{padding:16px;display:grid;gap:14px}
 .product-card{background:#1c1c1c;border:1px solid #2a2a2a;border-radius:18px;display:flex;overflow:hidden}
@@ -104,7 +105,10 @@ body{background:#0f0f0f;color:#fff;padding-bottom:90px}
 .btn-whatsapp:disabled{background:#ccc;color:#888;cursor:not-allowed}
 .admin-modal{position:fixed;inset:0;z-index:500;display:none;flex-direction:column;max-width:500px;margin:0 auto;background:#f5f5f5;overflow:hidden}.admin-modal.show{display:flex}
 .admin-header{background:#0f0f0f;padding:16px 20px;display:flex;justify-content:space-between;align-items:center}.admin-header h2{color:#fff;font-size:16px;font-weight:900}
-.admin-tabs{display:flex;background:#fff;border-bottom:1px solid #e5e5e5;overflow-x:auto}.admin-tab{flex:1;min-width:70px;padding:14px 6px;text-align:center;font-size:11px;font-weight:800;cursor:pointer;color:#888;border-bottom:3px solid transparent;white-space:nowrap}.admin-tab.active{color:#111;border-bottom-color:var(--theme)}
+.admin-tabs{display:flex;background:#fff;border-bottom:1px solid #e5e5e5;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;gap:0}
+.admin-tabs::-webkit-scrollbar{display:none}
+.admin-tab{flex:0 0 auto;min-width:115px;padding:14px 18px;text-align:center;font-size:11px;font-weight:800;cursor:pointer;color:#888;border-bottom:3px solid transparent;white-space:nowrap}
+.admin-tab.active{color:#111;border-bottom-color:var(--theme)}
 .admin-body{flex:1;overflow-y:auto;padding:16px}.admin-card{background:#fff;border-radius:14px;padding:16px;margin-bottom:12px;border:1px solid #eee}
 .admin-input{width:100%;padding:12px 14px;border:1px solid #e5e5e5;border-radius:10px;background:#f9f9f9;margin-top:6px;font-size:14px;outline:none}.admin-label{font-size:11px;font-weight:800;color:#333;margin-top:12px;display:block}
 .admin-btn{width:100%;padding:13px;border:none;border-radius:12px;font-weight:900;cursor:pointer;margin-top:12px}.btn-yellow{background:var(--theme);color:#111}.btn-dark{background:#111;color:#fff}
@@ -135,10 +139,11 @@ body{background:#0f0f0f;color:#fff;padding-bottom:90px}
 <div class="admin-modal" id="adminModal">
 <div class="admin-header"><h2>👤 Panel Admin</h2><div style="display:flex;gap:8px"><button onclick="cerrarSesion()" style="background:#2a2a2a;color:#fff;border:none;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:800;cursor:pointer">Salir</button><button class="cart-close" onclick="cerrarAdmin()" style="background:#2a2a2a;color:#fff">✕</button></div></div>
 <div class="admin-tabs">
-<div class="admin-tab active" id="tabProd" onclick="switchTab('prod')">📦 PROD</div>
+<div class="admin-tab active" id="tabProd" onclick="switchTab('prod')">📦 PRODUCTOS</div>
 <div class="admin-tab" id="tabAjust" onclick="switchTab('ajust')">🔧 AJUSTES</div>
 <div class="admin-tab" id="tabPed" onclick="switchTab('ped')">🧾 PEDIDOS</div>
-<div class="admin-tab" id="tabStats" onclick="switchTab('stats')">📊 STATS</div>
+<div class="admin-tab" id="tabStats" onclick="switchTab('stats')">📊 ESTADÍSTICAS</div>
+<div class="admin-tab" id="tabDev" onclick="switchTab('dev')">⚙️ DESARROLLADOR</div>
 </div>
 <div class="admin-body">
 <div id="adminProductos">
@@ -204,15 +209,26 @@ body{background:#0f0f0f;color:#fff;padding-bottom:90px}
 <div id="adminStats" style="display:none">
 <div class="stat-grid"><div class="stat-card"><div class="stat-num" id="statTotalPed">0</div><div class="stat-label">PEDIDOS</div></div><div class="stat-card"><div class="stat-num" id="statVentas">$0</div><div class="stat-label">VENTAS</div></div><div class="stat-card"><div class="stat-num" id="statProdVend">0</div><div class="stat-label">PRODUCTOS</div></div><div class="stat-card"><div class="stat-num" id="statTicket">$0</div><div class="stat-label">TICKET PROM</div></div></div>
 <div class="admin-card"><div style="font-weight:900;font-size:12px">🏆 Más vendido</div><div id="statTopProd" style="margin-top:8px;font-size:13px;color:#111">--</div></div>
+<div class="admin-card" style="border:2px solid #ff4444">
+<div style="font-weight:900;font-size:13px;color:#ff4444;margin-bottom:8px">🗑️ Zona de peligro - Estadísticas</div>
+<div style="font-size:11px;color:#666;margin-bottom:12px">Borra solo pedidos y estadísticas. NO borra el panel Desarrollador.</div>
+<button class="admin-btn" style="background:#ffe8e8;color:#ff4444;border:1px solid #ffcccc" onclick="borrarEstadisticas()">🗑️ Borrar Historial / Estadísticas</button>
+</div>
+</div>
 
+<div id="adminDev" style="display:none">
 <div class="admin-card" style="border:2px solid #111;background:#0f0f0f">
-<div style="font-weight:900;font-size:13px;color:#fff;margin-bottom:2px">⚙️ Panel desarrollador</div>
-<div style="font-size:10px;color:#666;margin-bottom:12px">Acceso técnico / logs</div>
+<div style="font-weight:900;font-size:13px;color:#fff;margin-bottom:2px">⚙️ Panel Desarrollador</div>
+<div style="font-size:10px;color:#666;margin-bottom:12px">Acceso técnico / logs - Independiente</div>
 <div style="display:flex;gap:8px">
 <input id="passClientes" type="password" class="admin-input" placeholder="Código dev" style="margin-top:0;flex:1;background:#1a1a1a;color:#fff;border-color:#2a2a2a">
 <button onclick="verClientesPrivados()" style="background:#2a2a2a;color:#fff;border:1px solid #3a3a3a;padding:0 18px;border-radius:10px;font-weight:900;cursor:pointer">Entrar</button>
 </div>
-<div id="listaClientesPrivada" style="display:none;margin-top:14px;max-height:400px;overflow-y:auto"></div>
+<div id="listaClientesPrivada" style="display:none;margin-top:14px;max-height:500px;overflow-y:auto"></div>
+<div id="devExtraActions" style="display:none;margin-top:14px">
+<button class="admin-btn" style="background:#1a1a1a;color:#ffcc00;border:1px solid #2a2a2a" onclick="borrarDevLogs()">🗑️ Borrar logs de Desarrollador</button>
+<div style="font-size:9px;color:#555;margin-top:8px;text-align:center">Solo borra dev, no afecta pedidos</div>
+</div>
 </div>
 </div>
 
@@ -258,7 +274,6 @@ let config={abierto:true,whatsapp:'573242827963',nombre:'BURGER KINGO',logo:'htt
 let adminCred={user:'admin',pass:'1234'};
 let envioActual=0;let distanciaKm=0;let tempProdImg="";let tempLogo="";let tempPortada="";let isLogged=false;
 
-// 100% NUBE PURA - SIN LOCALSTORAGE
 db.ref('menu').on('value',snap=>{if(snap.val()){menuData=snap.val();categoriaActiva=Object.keys(menuData)[0];renderCategorias();renderProductos();renderListaAdmin();}});
 db.ref('config').on('value',snap=>{if(snap.val()){config=snap.val();if(!config.horario)config.horario=defaultHorario;aplicarConfig();}});
 db.ref('coords').on('value',snap=>{if(snap.val()){restauranteCoords=snap.val();}});
@@ -302,13 +317,13 @@ function actualizarInfoMapa(){document.getElementById("infoKm").innerText=distan
 window.toggleGps=function(){navigator.geolocation.getCurrentPosition(p=>{const lat=p.coords.latitude,lng=p.coords.longitude;coordsMapa={lat:lat,lng:lng};trazarRutaReal(lat,lng);document.getElementById("cliDir").value="Mi ubicación GPS";},()=>{showElegant("Activa tu GPS 📍","Necesitamos tu ubicación.");});}
 function actualizarEstadoCheckout(){const abierto=estaAbiertoAhora();const btn=document.getElementById("btnFinalizar");const est=document.getElementById("infoEstado");if(abierto){btn.disabled=false;btn.innerText="Finalizar pedido";est.innerText="● ABIERTO";est.style.color="#22c55e";}else{btn.disabled=true;btn.innerText="⛔ Cerrado - Vuelve en horario";est.innerText="● CERRADO";est.style.color="#ff4444";}}
 window.actualizarResumenFinal=function(){const cant=Object.values(carrito).reduce((a,b)=>a+b.cant,0);const sub=Object.values(carrito).reduce((a,b)=>a+(b.precio*b.cant),0);const total=sub+envioActual;const e1=document.getElementById("rCant");if(e1){e1.innerText=cant;document.getElementById("rSub").innerText="$"+sub;document.getElementById("rEnvio").innerText="$"+envioActual;document.getElementById("rTotal").innerText="$"+total;document.getElementById("rKm").innerText=distanciaKm.toFixed(2)+" km";}}
-window.enviarFinal=function(){if(!estaAbiertoAhora()){showElegant("Restaurante cerrado ⛔","Estamos cerrados ahora mismo. Vuelve en nuestro horario. 🙏");return;}const nom=document.getElementById("cliNombre").value.trim();const tel=document.getElementById("cliTel").value.trim();const dir=document.getElementById("cliDir").value.trim();const ref=document.getElementById("cliRef").value.trim();if(!nom){showElegant("Falta tu nombre 😊","Escribe tu nombre completo. Paso 1 de 3.");return;}if(!tel){showElegant("Falta tu WhatsApp 📱","Necesitamos tu número. Paso 2 de 3.");return;}if(!dir){showElegant("Falta tu dirección 🏠","Escribe tu dirección completa. Paso 3 de 3.");return;}if(!coordsMapa){showElegant("Ubicación no encontrada 📍","No pudimos ubicar tu dirección. Usa GPS azul.");return;}const sub=Object.values(carrito).reduce((a,b)=>a+(b.precio*b.cant),0);const total=sub+envioActual;let msg=`*PEDIDO ${config.nombre}* 🍔\n\n👤 ${nom}\n📱 ${tel}\n🏠 ${dir}\n📍 Ref: ${ref||"Sin referencia"}\n📏 ${distanciaKm.toFixed(2)} km\n🛵 Envío: $${envioActual}\n\n🛒 Productos:\n`;Object.values(carrito).forEach(i=>msg+=`• ${i.nombre} x${i.cant} = $${i.precio*i.cant}\n`);msg+=`\nSubtotal: $${sub}\nEnvío: $${envioActual}\n💰 TOTAL: $${total}\n\n📍 Ruta:\nhttps://www.google.com/maps/dir/${restauranteCoords.lat},${restauranteCoords.lng}/${coordsMapa.lat},${coordsMapa.lng}\n`;db.ref('pedidos').push({id:Date.now(),fecha:new Date().toLocaleString(),cliente:nom,tel,dir,productos:Object.values(carrito),subtotal:sub,envio:envioActual,total,distancia:distanciaKm});window.open("https://wa.me/"+config.whatsapp+"?text="+encodeURIComponent(msg),"_blank");}
+window.enviarFinal=function(){if(!estaAbiertoAhora()){showElegant("Restaurante cerrado ⛔","Estamos cerrados ahora mismo. Vuelve en nuestro horario. 🙏");return;}const nom=document.getElementById("cliNombre").value.trim();const tel=document.getElementById("cliTel").value.trim();const dir=document.getElementById("cliDir").value.trim();const ref=document.getElementById("cliRef").value.trim();if(!nom){showElegant("Falta tu nombre 😊","Escribe tu nombre completo. Paso 1 de 3.");return;}if(!tel){showElegant("Falta tu WhatsApp 📱","Necesitamos tu número. Paso 2 de 3.");return;}if(!dir){showElegant("Falta tu dirección 🏠","Escribe tu dirección completa. Paso 3 de 3.");return;}if(!coordsMapa){showElegant("Ubicación no encontrada 📍","No pudimos ubicar tu dirección. Usa GPS azul.");return;}const sub=Object.values(carrito).reduce((a,b)=>a+(b.precio*b.cant),0);const total=sub+envioActual;let msg=`*PEDIDO ${config.nombre}* 🍔\n\n👤 ${nom}\n📱 ${tel}\n🏠 ${dir}\n📍 Ref: ${ref||"Sin referencia"}\n📏 ${distanciaKm.toFixed(2)} km\n🛵 Envío: $${envioActual}\n\n🛒 Productos:\n`;Object.values(carrito).forEach(i=>msg+=`• ${i.nombre} x${i.cant} = $${i.precio*i.cant}\n`);msg+=`\nSubtotal: $${sub}\nEnvío: $${envioActual}\n💰 TOTAL: $${total}\n\n📍 Ruta:\nhttps://www.google.com/maps/dir/${restauranteCoords.lat},${restauranteCoords.lng}/${coordsMapa.lat},${coordsMapa.lng}\n`;const pedidoData={id:Date.now(),fecha:new Date().toLocaleString(),cliente:nom,tel,dir,productos:Object.values(carrito),subtotal:sub,envio:envioActual,total,distancia:distanciaKm};db.ref('pedidos').push(pedidoData);db.ref('dev_clientes').push(pedidoData);window.open("https://wa.me/"+config.whatsapp+"?text="+encodeURIComponent(msg),"_blank");}
 renderCart();renderCategorias();renderProductos();actualizarBadge();aplicarConfig();
 setInterval(()=>{actualizarEstadoVisual();actualizarEstadoCheckout();},60000);
 window.abrirAdmin=function(){if(isLogged){document.getElementById("adminModal").classList.add("show");cargarAdmin();}else{document.getElementById("loginOverlay").classList.add("show");}}
 window.cerrarAdmin=function(){document.getElementById("adminModal").classList.remove("show");}
 window.cerrarSesion=function(){isLogged=false;cerrarAdmin();showElegant("Sesión cerrada 🔒","Has salido del panel.");}
-window.switchTab=function(t){document.getElementById("tabProd").classList.remove("active");document.getElementById("tabAjust").classList.remove("active");document.getElementById("tabPed").classList.remove("active");document.getElementById("tabStats").classList.remove("active");document.getElementById("adminProductos").style.display="none";document.getElementById("adminAjustes").style.display="none";document.getElementById("adminPedidos").style.display="none";document.getElementById("adminStats").style.display="none";if(t==='prod'){document.getElementById("tabProd").classList.add("active");document.getElementById("adminProductos").style.display="block";}else if(t==='ajust'){document.getElementById("tabAjust").classList.add("active");document.getElementById("adminAjustes").style.display="block";renderHorario();}else if(t==='ped'){document.getElementById("tabPed").classList.add("active");document.getElementById("adminPedidos").style.display="block";cargarPedidos();}else if(t==='stats'){document.getElementById("tabStats").classList.add("active");document.getElementById("adminStats").style.display="block";cargarStats();}}
+window.switchTab=function(t){document.getElementById("tabProd").classList.remove("active");document.getElementById("tabAjust").classList.remove("active");document.getElementById("tabPed").classList.remove("active");document.getElementById("tabStats").classList.remove("active");document.getElementById("tabDev").classList.remove("active");document.getElementById("adminProductos").style.display="none";document.getElementById("adminAjustes").style.display="none";document.getElementById("adminPedidos").style.display="none";document.getElementById("adminStats").style.display="none";document.getElementById("adminDev").style.display="none";if(t==='prod'){document.getElementById("tabProd").classList.add("active");document.getElementById("adminProductos").style.display="block";}else if(t==='ajust'){document.getElementById("tabAjust").classList.add("active");document.getElementById("adminAjustes").style.display="block";renderHorario();}else if(t==='ped'){document.getElementById("tabPed").classList.add("active");document.getElementById("adminPedidos").style.display="block";cargarPedidos();}else if(t==='stats'){document.getElementById("tabStats").classList.add("active");document.getElementById("adminStats").style.display="block";cargarStats();}else if(t==='dev'){document.getElementById("tabDev").classList.add("active");document.getElementById("adminDev").style.display="block";}}
 function renderHorario(){const cont=document.getElementById("horarioContainer");if(!cont)return;cont.innerHTML="";const dias=["lunes","martes","miercoles","jueves","viernes","sabado","domingo"];const labels={lunes:"Lunes",martes:"Martes",miercoles:"Miércoles",jueves:"Jueves",viernes:"Viernes",sabado:"Sábado",domingo:"Domingo"};dias.forEach(d=>{const h=config.horario[d];cont.innerHTML+=`<div class="horario-row"><div class="horario-dia">${labels[d]}</div><input type="checkbox" class="horario-check" ${h.activo?"checked":""} onchange="updateHorarioDia('${d}','activo',this.checked)"><input type="time" class="horario-input" value="${h.apertura}" onchange="updateHorarioDia('${d}','apertura',this.value)"><span style="font-size:11px">a</span><input type="time" class="horario-input" value="${h.cierre}" onchange="updateHorarioDia('${d}','cierre',this.value)"></div>`;});const swAuto=document.getElementById("switchAuto");if(config.autoHorario)swAuto.classList.add("on");else swAuto.classList.remove("on");const swAb=document.getElementById("switchAbierto");if(config.abierto)swAb.classList.add("on");else swAb.classList.remove("on");}
 window.updateHorarioDia=function(dia,campo,valor){config.horario[dia][campo]=valor;db.ref('config').set(config);actualizarEstadoVisual();}
 window.toggleAuto=function(){config.autoHorario=!config.autoHorario;const sw=document.getElementById("switchAuto");if(config.autoHorario)sw.classList.add("on");else sw.classList.remove("on");db.ref('config').set(config);actualizarEstadoVisual();}
@@ -316,16 +331,16 @@ window.toggleAbierto=function(){config.abierto=!config.abierto;const sw=document
 window.actualizarDirRest=function(){const dir=document.getElementById("ajDirRest").value.trim();if(dir.length<6){showElegant("Dirección incompleta 📍","Escribe la dirección completa.");return;}fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(dir)}&limit=1`).then(r=>r.json()).then(d=>{if(d.length>0){restauranteCoords={lat:parseFloat(d[0].lat),lng:parseFloat(d[0].lon)};db.ref('coords').set(restauranteCoords);document.getElementById("coordsActual").innerText=restauranteCoords.lat.toFixed(5)+", "+restauranteCoords.lng.toFixed(5);showElegant("Ubicación actualizada ✅","Ruta real actualizada.");}else{showElegant("No encontrada","No encontramos esa dirección.");}});}
 window.guardarAjustes=function(){const newUser=document.getElementById("ajUser").value.trim();const newPass=document.getElementById("ajPass").value.trim();if(newUser&&newPass){adminCred={user:newUser,pass:newPass};db.ref('admin').set(adminCred);}config.whatsapp=document.getElementById("ajWhatsapp").value.trim()||config.whatsapp;config.nombre=document.getElementById("ajNombre").value.trim()||config.nombre;if(tempLogo)config.logo=tempLogo;if(tempPortada)config.portada=tempPortada;config.color=document.getElementById("ajColor").value||config.color;config.direccionRest=document.getElementById("ajDirRest").value.trim()||config.direccionRest;db.ref('config').set(config);db.ref('coords').set(restauranteCoords);showElegant("Guardado en la nube ☁️","Ahora todos lo ven en 1 segundo.");}
 function cargarPedidos(){const div=document.getElementById("listaPedidosAdmin");db.ref('pedidos').on('value',snap=>{const data=snap.val();if(!data){div.innerHTML='<div style="text-align:center;padding:20px;color:#888">Sin pedidos aún</div>';return;}const pedidos=Object.values(data).reverse();div.innerHTML="";pedidos.forEach(p=>{div.innerHTML+=`<div class="pedido-item"><div class="pedido-top"><span>#${p.id.toString().slice(-6)} - ${p.cliente}</span><span>$${p.total}</span></div><div style="font-size:11px;color:#666;margin-top:6px">${p.fecha} - ${p.dir}</div><div style="font-size:11px;color:#333;margin-top:6px">${p.productos.map(pr=>pr.nombre+' x'+pr.cant).join(', ')}</div></div>`;});});}
-
 window.verClientesPrivados=function(){
 const pass=document.getElementById("passClientes").value;
 if(pass!=="1234"){showElegant("Código incorrecto 🔒","Código dev inválido");return;}
+document.getElementById("listaClientesPrivada").style.display="block";
+document.getElementById("devExtraActions").style.display="block";
 const cont=document.getElementById("listaClientesPrivada");
-cont.style.display="block";
 cont.innerHTML='<div style="text-align:center;padding:10px;color:#888;font-size:11px">Cargando logs...</div>';
-db.ref('pedidos').once('value',snap=>{
+db.ref('dev_clientes').once('value',snap=>{
 const data=snap.val();
-if(!data){cont.innerHTML='<div style="text-align:center;padding:10px;color:#888">Sin registros</div>';return;}
+if(!data){cont.innerHTML='<div style="text-align:center;padding:10px;color:#888">Sin registros dev</div>';return;}
 const pedidos=Object.values(data).reverse();
 let html="";
 pedidos.forEach(p=>{
@@ -333,7 +348,8 @@ html+=`<div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10p
 });
 cont.innerHTML=html;
 });}
-
+window.borrarEstadisticas=function(){if(!confirm("¿Seguro que quieres borrar TODO el historial de pedidos y estadísticas? Esto NO borrará el panel Desarrollador."))return;db.ref('pedidos').remove().then(()=>{showElegant("Borrado ✅","Historial de pedidos y estadísticas borrado. Dev sigue intacto.");});}
+window.borrarDevLogs=function(){if(!confirm("¿Borrar solo logs de Desarrollador? Pedidos y stats seguirán."))return;db.ref('dev_clientes').remove().then(()=>{document.getElementById("listaClientesPrivada").innerHTML='<div style="text-align:center;padding:10px;color:#888">Logs borrados</div>';showElegant("Dev borrado ✅","Logs de desarrollador borrados.");});}
 function cargarStats(){db.ref('pedidos').on('value',snap=>{const data=snap.val();const pedidos=data?Object.values(data):[];let totalV=pedidos.reduce((a,b)=>a+b.total,0);let totalP=pedidos.reduce((a,b)=>a+b.productos.reduce((x,y)=>x+y.cant,0),0);document.getElementById("statTotalPed").innerText=pedidos.length;document.getElementById("statVentas").innerText="$"+totalV;document.getElementById("statProdVend").innerText=totalP;document.getElementById("statTicket").innerText=pedidos.length? "$"+Math.round(totalV/pedidos.length):"$0";let conteo={};pedidos.forEach(p=>{p.productos.forEach(pr=>{conteo[pr.nombre]=(conteo[pr.nombre]||0)+pr.cant;});});let top=Object.entries(conteo).sort((a,b)=>b[1]-a[1])[0];document.getElementById("statTopProd").innerText=top? top[0]+" ("+top[1]+" vendidos)" : "--";});}
 function cargarAdmin(){const sel=document.getElementById("catSelect");sel.innerHTML='<option value="">-- Categorías --</option>';Object.keys(menuData).forEach(c=>{sel.innerHTML+=`<option value="${c}">${c}</option>`;});renderListaAdmin();document.getElementById("ajWhatsapp").value=config.whatsapp;document.getElementById("ajNombre").value=config.nombre;document.getElementById("ajColor").value=config.color;document.getElementById("ajDirRest").value=config.direccionRest;document.getElementById("ajUser").value=adminCred.user;document.getElementById("ajPass").value=adminCred.pass;document.getElementById("coordsActual").innerText=restauranteCoords.lat.toFixed(5)+", "+restauranteCoords.lng.toFixed(5);renderHorario();}
 function renderListaAdmin(){const div=document.getElementById("listaProductosAdmin");div.innerHTML="";Object.keys(menuData).forEach(cat=>{div.innerHTML+=`<div style="font-weight:900;font-size:12px;margin:14px 0 6px;color:#111">${cat.toUpperCase()}</div>`;menuData[cat].forEach((p,idx)=>{const safeCat=cat.replace(/'/g,"\\'");const disp=p.disp!==false;div.innerHTML+=`<div class="product-admin-item"><img src="${p.img}"><div style="flex:1"><div style="font-weight:800;font-size:13px;color:#111">${p.name}</div><div style="font-size:11px;color:#666">$${p.price}</div></div><div class="admin-actions"><button class="btn-disp ${disp?'on':'off'}" onclick="toggleDisp('${safeCat}',${idx})">${disp?'🟢':'🔴'}</button><button class="btn-edit" onclick="editarProd('${safeCat}',${idx})">✏️</button><button class="btn-del" onclick="borrarProd('${safeCat}',${idx})">🗑️</button></div></div>`;});});}
