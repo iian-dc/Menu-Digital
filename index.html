@@ -13,28 +13,17 @@ header{background:var(--main);color:#fff;padding:15px;text-align:center;position
 #cartBtn{position:fixed;bottom:20px;right:20px;background:var(--main);color:#fff;padding:15px 20px;border-radius:30px;border:none;box-shadow:0 4px 10px rgba(0,0,0,.3);z-index:100}
 </style>
 <script>
-// --- TU FIREBASE (BURGER KINGO) ---
 const firebaseConfig = {
-  apiKey: "AIzaSyDvetly8u2R0z4r3qXkL6mN8pQ1s2T3U4V",
+  apiKey: "AIzaSyDvetl-4f68ykb5GpGSZtCAvOeetKmnh-4",
   authDomain: "menu-digital-12e66.firebaseapp.com",
   databaseURL: "https://menu-digital-12e66-default-rtdb.firebaseio.com",
   projectId: "menu-digital-12e66",
-  storageBucket: "menu-digital-12e66.appspot.com",
-  messagingSenderId: "1234567890",
-  appId: "1:1234567890:web:abcdef123456"
+  storageBucket: "menu-digital-12e66.firebasestorage.app",
+  messagingSenderId: "388372771516",
+  appId: "1:388372771516:web:516a80aeeecc1ab8f756b9",
+  measurementId: "G-SBDX42X17X"
 };
-// SI TIENES TU CONFIG REAL, REEMPLAZA SOLO ESTE BLOQUE DE ARRIBA
-
 let db, menu={}, orders={}, cfg={name:"Burger Kingo",address:"Dolores Hidalgo",phone:"",color:"#ff4500",logoUrl:""}, logoUrl="", cart=[];
-</script>
-</head>
-<body>
-<header id="mainHeader">
-<img id="logo" src="" style="display:none"><h1 id="bizName">Burger Kingo</h1><p id="bizAddr">Dolores Hidalgo</p>
-</header>
-<div id="menuContainer" style="padding:15px"></div>
-<button id="cartBtn" onclick="openCart()">🛒 Ver Pedido (<span id="cartCount">0</span>)</button>
-<script>
 function save(){localStorage.setItem('menu',JSON.stringify(menu));localStorage.setItem('cfg',JSON.stringify(cfg));}
 function renderHeader(){
  document.getElementById('bizName').innerText=cfg.name||"Burger Kingo";
@@ -73,6 +62,13 @@ function openCart(){
  }
 }
 </script>
+</head>
+<body>
+<header id="mainHeader">
+<img id="logo" src="" style="display:none"><h1 id="bizName">Burger Kingo</h1><p id="bizAddr">Dolores Hidalgo</p>
+</header>
+<div id="menuContainer" style="padding:15px"></div>
+<button id="cartBtn" onclick="openCart()">🛒 Ver Pedido (<span id="cartCount">0</span>)</button>
 <div id="adminPanel" style="display:none;padding:15px;background:#fff;margin:15px;border-radius:10px">
 <h2>ADMIN</h2>
 <input id="cfgName" placeholder="Nombre negocio" style="width:100%;padding:8px;margin:5px 0"><br>
@@ -80,7 +76,7 @@ function openCart(){
 <input id="cfgPhone" placeholder="WhatsApp 52438..." style="width:100%;padding:8px;margin:5px 0"><br>
 <input id="cfgColor" type="color" value="#ff4500"><label> Color</label><br>
 <input id="cfgLogo" placeholder="URL Logo" style="width:100%;padding:8px;margin:5px 0"><br>
-<button onclick="saveConfig()" style="width:100%;padding:10px;background:#000;color:#fff;border-radius:8px;margin-top:10px">💾 Guardar en la Nube ☁️</button>
+<button onclick="saveConfig()" style="width:100%;padding:10px;background:#000;color:#fff;border-radius:8px;margin-top:10px">💾 Guardar en la Nube</button>
 <hr style="margin:15px 0">
 <h3>Agregar Producto</h3>
 <input id="pCat" placeholder="Categoría ej: Hamburguesas" style="width:100%;padding:8px;margin:5px 0">
@@ -101,7 +97,7 @@ function saveConfig(){
  cfg.color=document.getElementById('cfgColor').value;
  cfg.logoUrl=document.getElementById('cfgLogo').value;
  logoUrl=cfg.logoUrl;
- if(db) db.ref('config').set(cfg).then(()=>alert("✅ Sincronizado en la nube instantáneo"));
+ if(db) db.ref('config').set(cfg).then(()=>alert("✅ Sincronizado"));
  save();renderHeader();
 }
 function saveProduct(){
@@ -125,30 +121,17 @@ function renderOrders(){
    cont.appendChild(d);
  });
 }
-  </script>
-  <div style="text-align:center;padding:20px"><button onclick="openAdmin()" style="background:none;border:none;color:#999;text-decoration:underline">Entrar como Admin</button></div>
+</script>
+<div style="text-align:center;padding:20px"><button onclick="openAdmin()" style="background:none;border:none;color:#999;text-decoration:underline">Entrar como Admin</button></div>
 <script>
-// Cargar local primero (para que no quede en blanco)
 try{let m=localStorage.getItem('menu');if(m)menu=JSON.parse(m);let c=localStorage.getItem('cfg');if(c)cfg=JSON.parse(c);}catch(e){}
 renderHeader();render();
-
-// --- FIREBASE LISTENERS (VERSIÓN RÁPIDA SIN DEMORA) ---
 try {
   if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
   db = firebase.database();
-  db.ref('config').on('value', snap => {
-    if (snap.exists()) {
-      cfg = {...cfg,...snap.val() };
-      logoUrl = cfg.logoUrl||"";
-      save();renderHeader();renderAdminPanel();
-    }
-  });
-  db.ref('menu').on('value', snap => {
-    if (snap.exists()) { menu = snap.val(); save(); render(); }
-  });
-  db.ref('orders').on('value', snap => {
-    if (snap.exists()) { orders = snap.val(); save(); renderOrders(); } else { orders={}; renderOrders(); }
-  });
+  db.ref('config').on('value', snap => { if (snap.exists()) { cfg = {...cfg,...snap.val() }; logoUrl = cfg.logoUrl||""; save();renderHeader();renderAdminPanel(); } });
+  db.ref('menu').on('value', snap => { if (snap.exists()) { menu = snap.val(); save(); render(); } });
+  db.ref('orders').on('value', snap => { if (snap.exists()) { orders = snap.val(); save(); renderOrders(); } else { orders={}; renderOrders(); } });
 } catch(e){console.log("Error Firebase:", e);}
 </script>
 </body>
