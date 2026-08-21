@@ -64,12 +64,12 @@ const menuData={
 let categoriaActiva=Object.keys(menuData)[0];let cantidades={};let carrito={};
 function renderCategorias(){const d=document.getElementById("categories");d.innerHTML="";Object.keys(menuData).forEach(c=>{const b=document.createElement("button");b.className="cat-btn"+(c===categoriaActiva?" active":"");b.innerText=c;b.onclick=()=>{categoriaActiva=c;renderCategorias();renderProductos();};d.appendChild(b);});}
 function renderProductos(){const d=document.getElementById("products");d.innerHTML="";menuData[categoriaActiva].forEach((p,i)=>{const id=categoriaActiva+"_"+i;if(cantidades[id]===undefined)cantidades[id]=0;d.innerHTML+=`<div class="product-card"><img class="product-img" src="${p.img}"><div class="product-info"><div class="product-name">${p.name}</div><div class="product-desc">${p.desc}</div><div class="product-bottom"><div class="product-price">$${p.price}</div><div class="qty-control"><button class="qty-btn" onclick="cambiarQty('${id}',-1,'${p.name}',${p.price},'${p.img}')">−</button><div class="qty-num" id="qty_${id}">${cantidades[id]}</div><button class="qty-btn" onclick="cambiarQty('${id}',1,'${p.name}',${p.price},'${p.img}')">+</button></div></div></div></div>`;});}
-function cambiarQty(id,delta,nombre,precio,img){let a=cantidades[id]||0;a+=delta;if(a<0)a=0;cantidades[id]=a;const el=document.getElementById("qty_"+id);if(el)el.innerText=a;if(a===0)delete carrito[id];else carrito[id]={nombre,precio,img,cant:a};actualizarBadge();if(typeof renderCart==='function')renderCart();}
+function cambiarQty(id,delta,nombre,precio,img){let a=cantidades[id]||0;a+=delta;if(a<0)a=0;cantidades[id]=a;const el=document.getElementById("qty_"+id);if(el)el.innerText=a;if(a===0)delete carrito[id];else carrito[id]={nombre,precio,img,cant:a};actualizarBadge();if(typeof renderCart==='function')renderCart();if(typeof actualizarResumenFinal==='function')actualizarResumenFinal();}
 function actualizarBadge(){document.getElementById("cartCount").innerText=Object.values(carrito).reduce((a,b)=>a+b.cant,0);}
 function checarHorario(){const h=new Date().getHours();const ab=h>=12&&h<23;const b=document.getElementById("statusBadge");b.className="status-neon "+(ab?"abierto":"cerrado");b.innerText=ab?"● ABIERTO":"● CERRADO";}
 checarHorario();renderCategorias();renderProductos();
-  </script>
-  <style>
+                                                </script>
+                                                <style>
 .cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:none}
 .cart-overlay.show{display:block}
 .cart-modal{position:fixed;bottom:0;left:0;right:0;max-width:500px;margin:0 auto;background:#161616;border-radius:24px 24px 0 0;z-index:201;max-height:85vh;display:none;flex-direction:column;transform:translateY(100%);transition:.35s}
@@ -81,26 +81,23 @@ checarHorario();renderCategorias();renderProductos();
 .cart-item img{width:50px;height:50px;border-radius:10px}
 .cart-item-info{flex:1}.cart-item-name{font-weight:800;font-size:13px}.cart-item-price{color:#ffcc00;font-weight:800;font-size:12px}
 .cart-del{background:#2a2a2a;border:none;color:#ff4d4d;width:26px;height:26px;border-radius:50%;cursor:pointer}
-.addons-title{font-weight:900;font-size:13px;margin:18px 0 10px}
-.addons-scroll{display:flex;gap:12px;overflow-x:auto}
+.addons-title{font-weight:900;font-size:13px;margin:18px 0 10px}.addons-scroll{display:flex;gap:12px;overflow-x:auto}
 .addon-card{min-width:110px;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:14px;padding:8px;text-align:center;cursor:pointer}
-.addon-card img{width:70px;height:70px;border-radius:10px;object-fit:cover}
-.addon-name{font-size:11px;font-weight:800;margin-top:6px}.addon-price{font-size:11px;color:#ffcc00;font-weight:900}
+.addon-card img{width:70px;height:70px;border-radius:10px;object-fit:cover}.addon-name{font-size:11px;font-weight:800;margin-top:6px}.addon-price{font-size:11px;color:#ffcc00;font-weight:900}
 .cart-footer{padding:16px 20px;border-top:1px solid #2a2a2a;background:#1c1c1c}
-.summary-row{display:flex;justify-content:space-between;font-size:12px;color:#aaa;margin-bottom:6px}
-.summary-row.total{color:#fff;font-weight:900;font-size:16px}
-.btn-pedir{width:100%;background:#ffcc00;color:#111;border:none;padding:14px;border-radius:14px;font-weight:900;margin-top:12px;cursor:pointer}
+.btn-pedir{width:100%;background:#ffcc00;color:#111;border:none;padding:14px;border-radius:14px;font-weight:900;cursor:pointer}
 .checkout-modal{position:fixed;inset:0;z-index:300;display:none;flex-direction:column;max-width:500px;margin:0 auto;background:#0f0f0f;overflow-y:auto}
 .checkout-modal.show{display:flex}
-.input-group{padding:12px 20px}.input-group label{font-size:11px;font-weight:800;color:#aaa;display:block;margin-bottom:6px}
+.input-group{padding:10px 20px}.input-group label{font-size:11px;font-weight:800;color:#aaa;display:block;margin-bottom:6px}
 .input-field{width:100%;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:12px;padding:12px;color:#fff;outline:none}
-.map-box{margin:0 20px;border-radius:14px;overflow:hidden;border:1px solid #2a2a2a;height:230px}#map{height:100%;width:100%}
-.switch-row{display:flex;justify-content:space-between;align-items:center;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:12px;padding:12px 14px;margin:12px 20px}
+.input-field:focus{border-color:#ffcc00}
+.map-box{margin:10px 20px;border-radius:14px;overflow:hidden;border:1px solid #2a2a2a;height:250px}#map{height:100%;width:100%}
+.switch-row{display:flex;justify-content:space-between;align-items:center;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:12px;padding:12px 14px;margin:10px 20px}
 .switch-label{font-size:12px;font-weight:800}.switch-label span{font-size:10px;color:#aaa;display:block}
-.toggle{width:46px;height:26px;background:#2a2a2a;border-radius:20px;position:relative;cursor:pointer;transition:.3s}
-.toggle.on{background:#22c55e}
-.toggle-dot{width:20px;height:20px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:.3s}
-.toggle.on.toggle-dot{left:23px}
+.toggle{width:46px;height:26px;background:#2a2a2a;border-radius:20px;position:relative;cursor:pointer;transition:.3s}.toggle.on{background:#22c55e}.toggle-dot{width:20px;height:20px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:.3s}.toggle.on.toggle-dot{left:23px}
+.resumen-final{background:#1c1c1c;border:1px solid #2a2a2a;border-radius:14px;margin:12px 20px;padding:14px}
+.resumen-line{display:flex;justify-content:space-between;font-size:12px;color:#aaa;margin-bottom:6px}
+.resumen-line.total{color:#fff;font-weight:900;font-size:15px;border-top:1px solid #2a2a2a;padding-top:8px;margin-top:8px}
 .btn-confirm{margin:16px 20px;background:#ffcc00;color:#111;border:none;padding:14px;border-radius:14px;font-weight:900;cursor:pointer}
 </style>
 
@@ -109,9 +106,6 @@ checarHorario();renderCategorias();renderProductos();
   <div class="cart-header"><div class="cart-title">🛒 Tu Pedido</div><button class="cart-close" onclick="cerrarCarrito()">✕</button></div>
   <div class="cart-body"><div id="cartList"></div><div class="addons-title">¿ALGO MÁS? 👇</div><div class="addons-scroll" id="addonsScroll"></div></div>
   <div class="cart-footer">
-    <div class="summary-row"><span>Productos:</span><span id="resumenCant">0</span></div>
-    <div class="summary-row"><span>Subtotal:</span><span id="resumenSub">$0</span></div>
-    <div class="summary-row total"><span>Total:</span><span id="resumenTotal">$0</span></div>
     <button class="btn-pedir" onclick="abrirCheckout()">CONFIRMAR PEDIDO ✅</button>
   </div>
 </div>
@@ -120,56 +114,137 @@ checarHorario();renderCategorias();renderProductos();
   <div class="cart-header"><div class="cart-title">📍 Datos de Entrega</div><button class="cart-close" onclick="cerrarCheckout()">✕</button></div>
   <div class="input-group"><label>NOMBRE</label><input id="cliNombre" class="input-field" placeholder="Juan Pérez"></div>
   <div class="input-group"><label>TELÉFONO</label><input id="cliTel" class="input-field" placeholder="418 123 4567"></div>
-  <div class="input-group"><label>DIRECCIÓN - APARECE AUTO EN MAPA</label><input id="cliDir" class="input-field" placeholder="Calle Hidalgo 45, Centro" oninput="buscarDireccion(this.value)"></div>
-  <div class="map-box"><div id="map"></div></div>
-  <div class="switch-row">
-    <div class="switch-label">📡 Mi ubicación real<span>Activar para validar</span></div>
-    <div class="toggle" id="toggleGps" onclick="toggleGps()"><div class="toggle-dot"></div></div>
+  <div class="input-group"><label>COLONIA - BASE KIGO XPRESS</label>
+    <select id="cliColonia" class="input-field" onchange="actualizarColonia()">
+      <option value="">Selecciona colonia</option>
+      <option value="Centro">Centro - $15</option>
+      <option value="San Isidro">San Isidro - $20</option>
+      <option value="Lindavista">Lindavista - $25</option>
+      <option value="La Esperanza">La Esperanza - $25</option>
+      <option value="Emiliano Zapata">Emiliano Zapata - $30</option>
+      <option value="Guanajuato">Guanajuato - $35</option>
+      <option value="Cerritos">Cerritos - $35</option>
+      <option value="Otra">Otra colonia - $40</option>
+    </select>
   </div>
+  <div class="input-group"><label>DIRECCIÓN + COLONIA - APARECE AUTO EN MAPA</label><input id="cliDir" class="input-field" placeholder="Calle Morelos 45" oninput="buscarDireccion()"></div>
+  <div class="map-box"><div id="map"></div></div>
+  <div class="switch-row"><div class="switch-label">📡 Mi ubicación real<span>Activar para validar ruta</span></div><div class="toggle" id="toggleGps" onclick="toggleGps()"><div class="toggle-dot"></div></div></div>
+
+  <div class="resumen-final" id="resumenFinal">
+    <div style="font-weight:900;font-size:13px;margin-bottom:10px">🧾 RESUMEN DE PEDIDO</div>
+    <div class="resumen-line"><span>Productos (<span id="rCant">0</span>)</span><span id="rSub">$0</span></div>
+    <div class="resumen-line"><span>Envío Kigo Xpress (<span id="rCol">-</span>)</span><span id="rEnvio">$0</span></div>
+    <div class="resumen-line total"><span>TOTAL A PAGAR</span><span id="rTotal">$0</span></div>
+  </div>
+
   <div class="input-group"><label>NOTAS</label><input id="cliNotas" class="input-field" placeholder="Sin cebolla..."></div>
-  <button class="btn-confirm" onclick="enviarFinal()">ENVIAR A 2 WHATSAPP 🚀</button>
+  <button class="btn-confirm" onclick="enviarFinal()">ENVIAR A WHATSAPP 🚀</button>
   <div style="height:30px"></div>
 </div>
 
 <script>
-const extras=[{name:"Refresco",price:25,img:"https://images.unsplash.com/photo-1553456558-aff63285bdd1?w=200"},{name:"Papas",price:45,img:"https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=200"},{name:"Queso",price:15,img:"https://images.unsplash.com/photo-1550547660-d9450f859349?w=200"}];
-let mapa=null,markerDir=null,markerGps=null,coordsMapa=null,coordsGps=null,gpsActivo=false,debounceTimer=null;
+// BASE DE DATOS KIGO XPRESS - ENVÍOS POR COLONIA
+const preciosEnvio={
+  "Centro":15,
+  "San Isidro":20,
+  "Lindavista":25,
+  "La Esperanza":25,
+  "Emiliano Zapata":30,
+  "Guanajuato":35,
+  "Cerritos":35,
+  "Otra":40,
+  "":0
+};
+// DIRECCIÓN RESTAURANTE - POR AHORA DE PRUEBA
+const restauranteCoords={lat:21.1556,lng:-100.9348,dir:"Burger Kingo, Dolores Hidalgo"};
+
+const extras=[{name:"Refresco",price:25,img:"https://images.unsplash.com/photo-1553456558-aff63285bdd1?w=200"},{name:"Papas",price:45,img:"https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=200"}];
+let mapa=null,markerDir=null,markerGps=null,markerRest=null,polylineRuta=null,coordsMapa=null,coordsGps=null,gpsActivo=false,debounceTimer=null,envioActual=0;
+
 function renderCart(){const list=document.getElementById("cartList");const ids=Object.keys(carrito);if(ids.length===0){list.innerHTML='<div style="text-align:center;padding:20px;color:#777">Vacío 🛒</div>';}else{list.innerHTML="";ids.forEach(id=>{const it=carrito[id];list.innerHTML+=`<div class="cart-item"><img src="${it.img}"><div class="cart-item-info"><div class="cart-item-name">${it.nombre} x${it.cant}</div><div class="cart-item-price">$${it.precio*it.cant}</div></div><div style="display:flex;gap:8px;align-items:center"><div class="qty-control"><button class="qty-btn" onclick="cambiarQty('${id}',-1,'${it.nombre}',${it.precio},'${it.img}')">−</button><div class="qty-num">${it.cant}</div><button class="qty-btn" onclick="cambiarQty('${id}',1,'${it.nombre}',${it.precio},'${it.img}')">+</button></div><button class="cart-del" onclick="eliminar('${id}')">🗑️</button></div></div>`;});}
-const tc=Object.values(carrito).reduce((a,b)=>a+b.cant,0);const sub=Object.values(carrito).reduce((a,b)=>a+(b.precio*b.cant),0);
-document.getElementById("resumenCant").innerText=tc+" productos";document.getElementById("resumenSub").innerText="$"+sub;document.getElementById("resumenTotal").innerText="$"+sub;
-const addDiv=document.getElementById("addonsScroll");addDiv.innerHTML="";extras.forEach(e=>{addDiv.innerHTML+=`<div class="addon-card" onclick="addExtra('${e.name}',${e.price},'${e.img}')"><img src="${e.img}"><div class="addon-name">${e.name}</div><div class="addon-price">$${e.price}</div></div>`;});}
+const addDiv=document.getElementById("addonsScroll");addDiv.innerHTML="";extras.forEach(e=>{addDiv.innerHTML+=`<div class="addon-card" onclick="addExtra('${e.name}',${e.price},'${e.img}')"><img src="${e.img}"><div class="addon-name">${e.name}</div><div class="addon-price">$${e.price}</div></div>`;});actualizarResumenFinal();}
 function addExtra(n,p,img){const id="extra_"+n;if(!carrito[id])carrito[id]={nombre:n,precio:p,img:img,cant:0};carrito[id].cant++;cantidades[id]=(cantidades[id]||0)+1;actualizarBadge();renderCart();}
 function eliminar(id){delete carrito[id];cantidades[id]=0;const el=document.getElementById("qty_"+id);if(el)el.innerText=0;actualizarBadge();renderCart();}
 function abrirCarrito(){document.getElementById("cartOverlay").classList.add("show");document.getElementById("cartModal").classList.add("show");renderCart();}
 function cerrarCarrito(){document.getElementById("cartOverlay").classList.remove("show");document.getElementById("cartModal").classList.remove("show");}
-function abrirCheckout(){if(Object.keys(carrito).length===0){alert("Agrega algo");return;}cerrarCarrito();document.getElementById("checkoutModal").classList.add("show");setTimeout(()=>{initMap();},300);}
+function abrirCheckout(){if(Object.keys(carrito).length===0){alert("Agrega algo");return;}cerrarCarrito();document.getElementById("checkoutModal").classList.add("show");setTimeout(()=>{initMap();actualizarResumenFinal();},300);}
 function cerrarCheckout(){document.getElementById("checkoutModal").classList.remove("show");}
-function initMap(){if(mapa)return;mapa=L.map('map').setView([21.155,-100.934],14);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapa);}
-function buscarDireccion(txt){if(txt.length<6)return;clearTimeout(debounceTimer);debounceTimer=setTimeout(()=>{fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(txt + ", Dolores Hidalgo")}&limit=1`).then(r=>r.json()).then(d=>{if(d.length>0){const lat=parseFloat(d[0].lat),lon=parseFloat(d[0].lon);coordsMapa={lat:lat,lng:lon};if(markerDir)mapa.removeLayer(markerDir);markerDir=L.marker([lat,lon]).addTo(mapa);mapa.setView([lat,lon],16);}});},900);}
-function toggleGps(){const t=document.getElementById("toggleGps");gpsActivo=!gpsActivo;t.classList.toggle("on",gpsActivo);if(gpsActivo){navigator.geolocation.getCurrentPosition(p=>{coordsGps={lat:p.coords.latitude,lng:p.coords.longitude};if(markerGps)mapa.removeLayer(markerGps);markerGps=L.marker([coordsGps.lat,coordsGps.lng],{icon:L.icon({iconUrl:'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',shadowUrl:'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7/images/marker-shadow.png',iconSize:[25,41],iconAnchor:[12,41]})}).addTo(mapa);if(!coordsMapa){mapa.setView([coordsGps.lat,coordsGps.lng],16);coordsMapa=coordsGps;}},()=>{alert("Activa GPS");gpsActivo=false;t.classList.remove("on");});}else{if(markerGps){mapa.removeLayer(markerGps);markerGps=null;}coordsGps=null;}}
-
+function initMap(){
+  if(mapa) return;
+  mapa=L.map('map').setView([restauranteCoords.lat,restauranteCoords.lng],14);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapa);
+  markerRest=L.marker([restauranteCoords.lat,restauranteCoords.lng],{icon:L.icon({iconUrl:'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',shadowUrl:'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7/images/marker-shadow.png',iconSize:[25,41],iconAnchor:[12,41]})}).addTo(mapa).bindPopup("BURGER KINGO - RESTAURANTE");
+}
+function actualizarColonia(){
+  const col=document.getElementById("cliColonia").value;
+  envioActual=preciosEnvio[col]||0;
+  document.getElementById("rCol").innerText=col||"-";
+  document.getElementById("rEnvio").innerText="$"+envioActual;
+  actualizarResumenFinal();
+  buscarDireccion();
+}
+function buscarDireccion(){
+  const dir=document.getElementById("cliDir").value.trim();
+  const col=document.getElementById("cliColonia").value;
+  if(dir.length<6) return;
+  clearTimeout(debounceTimer);
+  debounceTimer=setTimeout(()=>{
+    const query=dir+" "+col+", Dolores Hidalgo";
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`).then(r=>r.json()).then(d=>{
+      if(d.length>0){
+        const lat=parseFloat(d[0].lat),lon=parseFloat(d[0].lon);
+        coordsMapa={lat:lat,lng:lon};
+        if(markerDir) mapa.removeLayer(markerDir);
+        markerDir=L.marker([lat,lon]).addTo(mapa).bindPopup("Cliente");
+        dibujarRuta();
+      }
+    });
+  },900);
+}
+function dibujarRuta(){
+  if(!coordsMapa) return;
+  if(polylineRuta) mapa.removeLayer(polylineRuta);
+  polylineRuta=L.polyline([[restauranteCoords.lat,restauranteCoords.lng],[coordsMapa.lat,coordsMapa.lng]],{color:'#ffcc00',weight:4,dashArray:'8,8'}).addTo(mapa);
+  mapa.fitBounds([[restauranteCoords.lat,restauranteCoords.lng],[coordsMapa.lat,coordsMapa.lng]],{padding:[40,40]});
+}
+function toggleGps(){
+  const t=document.getElementById("toggleGps");gpsActivo=!gpsActivo;t.classList.toggle("on",gpsActivo);
+  if(gpsActivo){
+    navigator.geolocation.getCurrentPosition(p=>{
+      coordsGps={lat:p.coords.latitude,lng:p.coords.longitude};coordsMapa=coordsGps;
+      if(markerGps) mapa.removeLayer(markerGps);
+      markerGps=L.marker([coordsGps.lat,coordsGps.lng],{icon:L.icon({iconUrl:'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',shadowUrl:'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7/images/marker-shadow.png',iconSize:[25,41],iconAnchor:[12,41]})}).addTo(mapa);
+      dibujarRuta();
+    },()=>{alert("Activa GPS");gpsActivo=false;t.classList.remove("on");});
+  }else{if(markerGps){mapa.removeLayer(markerGps);markerGps=null;}}
+}
+function actualizarResumenFinal(){
+  const cant=Object.values(carrito).reduce((a,b)=>a+b.cant,0);
+  const sub=Object.values(carrito).reduce((a,b)=>a+(b.precio*b.cant),0);
+  const total=sub+envioActual;
+  document.getElementById("rCant").innerText=cant;
+  document.getElementById("rSub").innerText="$"+sub;
+  document.getElementById("rEnvio").innerText="$"+envioActual;
+  document.getElementById("rTotal").innerText="$"+total;
+}
 function enviarFinal(){
   const nom=document.getElementById("cliNombre").value.trim();
   const tel=document.getElementById("cliTel").value.trim();
   const dir=document.getElementById("cliDir").value.trim();
-  if(!nom||!tel||!dir){alert("Llena nombre, tel y dirección");return;}
+  const col=document.getElementById("cliColonia").value;
+  if(!nom||!tel||!dir||!col){alert("Llena nombre, tel, colonia y dirección");return;}
   if(!coordsMapa){alert("Escribe dirección válida para mapa");return;}
-  let msg=`*NUEVO PEDIDO - BURGER KINGO* 🍔\n\n👤 Cliente: ${nom}\n📱 Tel: ${tel}\n🏠 Dir: ${dir}\n\n🛒 *Productos:*\n`;
+  const sub=Object.values(carrito).reduce((a,b)=>a+(b.precio*b.cant),0);
+  const total=sub+envioActual;
+  let msg=`*PEDIDO BURGER KINGO* 🍔\n\n👤 ${nom}\n📱 ${tel}\n🏘️ Colonia: ${col} - Envío $${envioActual}\n🏠 ${dir}\n\n🛒 Productos:\n`;
   Object.values(carrito).forEach(i=>msg+=`• ${i.nombre} x${i.cant} = $${i.precio*i.cant}\n`);
-  const tot=Object.values(carrito).reduce((a,b)=>a+(b.precio*b.cant),0);
-  msg+=`\n💰 Total: $${tot} - ${Object.values(carrito).reduce((a,b)=>a+b.cant,0)} productos\n`;
-  msg+=`📍 Mapa: https://www.google.com/maps?q=${coordsMapa.lat},${coordsMapa.lng}\n`;
+  msg+=`\nSubtotal: $${sub}\nEnvío Kigo Xpress: $${envioActual}\n💰 TOTAL: $${total}\n`;
+  msg+=`📍 Ruta Cliente -> Restaurante: https://www.google.com/maps/dir/${coordsMapa.lat},${coordsMapa.lng}/${restauranteCoords.lat},${restauranteCoords.lng}\n`;
   if(coordsGps)msg+=`🛰️ GPS Real: https://www.google.com/maps?q=${coordsGps.lat},${coordsGps.lng}\n`;
-  msg+=`📝 Notas: ${document.getElementById("cliNotas").value||"Ninguna"}`;
-
-  const numeroRestaurante = "573242827963";
-  const numeroRepartidor = "524182371993";
-
-  const url1 = "https://wa.me/"+numeroRestaurante+"?text="+encodeURIComponent(msg);
-  const url2 = "https://wa.me/"+numeroRepartidor+"?text="+encodeURIComponent(msg);
-
-  window.open(url1,"_blank");
-  setTimeout(()=>{ window.open(url2,"_blank"); }, 900);
+  msg+=`📝 ${document.getElementById("cliNotas").value||"Ninguna"}`;
+  const numeroRestaurante="573242827963";
+  window.open("https://wa.me/"+numeroRestaurante+"?text="+encodeURIComponent(msg),"_blank");
 }
 renderCart();
 </script>
