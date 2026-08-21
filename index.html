@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BURGER KINGO</title>
+<title id="pageTitle">BURGER KINGO</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
@@ -12,6 +12,7 @@ body{background:#0f0f0f;color:#fff;padding-bottom:90px}
 .header{background:linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.9)),url('https://images.unsplash.com/photo-1550547660-d9450f859349?w=800');background-size:cover;background-position:center;padding:35px 20px 25px;text-align:center;position:relative}
 .status-neon{position:absolute;top:14px;right:14px;padding:6px 14px;border-radius:20px;font-size:11px;font-weight:900}
 .status-neon.abierto{background:rgba(0,0,0,.6);color:#fff;border:1.5px solid #22c55e;box-shadow:0 0 12px #22c55e}
+.status-neon.cerrado{background:rgba(0,0,0,.6);color:#fff;border:1.5px solid #ff4444;box-shadow:0 0 12px #ff4444}
 .logo-box{width:90px;height:90px;background:#fff;border-radius:50%;margin:0 auto 14px;overflow:hidden;border:3px solid #ffcc00}
 .logo-box img{width:100%;height:100%;object-fit:cover}
 .restaurant-name{font-size:28px;font-weight:900}.restaurant-name span{color:#ffcc00}
@@ -31,53 +32,57 @@ body{background:#0f0f0f;color:#fff;padding-bottom:90px}
 .qty-num{width:28px;text-align:center;font-weight:900;font-size:13px}
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;max-width:500px;margin:0 auto;background:#1c1c1c;border-top:1px solid #2a2a2a;display:flex;justify-content:space-around;align-items:center;padding:8px 10px 14px;z-index:100;border-radius:20px 20px 0 0}
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:4px;color:#777;font-size:10px;font-weight:800;background:none;border:none;cursor:pointer;min-width:60px}
+.nav-item.active{color:#ffcc00}
 .nav-center-wrap{display:flex;flex-direction:column;align-items:center;cursor:pointer}
 .nav-center{width:66px;height:66px;background:radial-gradient(circle at 30% 30%, #ffe27a, #ffcc00 40%, #e6a800);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:-38px;border:4px solid #0f0f0f;box-shadow:0 10px 25px rgba(255,204,0,.5)}
 .nav-center-label{font-size:10px;font-weight:900;color:#ffcc00;margin-top:6px}
 .cart-badge{position:absolute;top:-4px;right:6px;background:#E53935;color:#fff;font-size:9px;font-weight:900;padding:2px 5px;border-radius:10px;min-width:16px;text-align:center}
 .nav-item-wrapper{position:relative}
-</style>
-</head>
-<body>
-<div class="header">
-  <div id="statusBadge" class="status-neon abierto">● ABIERTO</div>
-  <div class="logo-box"><img src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png"></div>
-  <div class="restaurant-name">BURGER <span>KINGO</span></div>
-  <div class="tagline">DOLORES HIDALGO • COMIDA RÁPIDA</div>
-</div>
-<div class="categories" id="categories"></div>
-<div class="products" id="products"></div>
-<div class="bottom-nav">
-  <button class="nav-item active"><div>🏠</div>INICIO</button>
-  <div class="nav-center-wrap"><div class="nav-center">👣</div><div class="nav-center-label">ADMIN</div></div>
-  <div class="nav-item-wrapper"><button class="nav-item" onclick="abrirCarrito()"><div>🛒</div>CARRITO</button><div class="cart-badge" id="cartCount">0</div></div>
-</div>
-<script>
-const menuData={
-  "Hamburguesas":[{name:"Clásica Sencilla",desc:"Carne 100% res",price:65,img:"https://images.unsplash.com/photo-1568909344668-6f14a07b56a0?w=300"},{name:"Doble Queso",desc:"Doble carne",price:95,img:"https://images.unsplash.com/photo-1550547660-d9450f859349?w=300"}],
-  "Hot Dogs":[{name:"Hot Dog Clásico",desc:"Salchicha jumbo",price:35,img:"https://images.unsplash.com/photo-1551782450-a2132b4ba21d?w=300"}],
-  "Papas":[{name:"Papas Francesa",desc:"Orden grande",price:45,img:"https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=300"}],
-  "Bebidas":[{name:"Refresco 600ml",desc:"Coca, Sprite",price:25,img:"https://images.unsplash.com/photo-1553456558-aff63285bdd1?w=300"}]
-};
-let categoriaActiva=Object.keys(menuData)[0];
-let cantidades={};
-let carrito={};
-const restauranteCoords={lat:21.1556,lng:-100.9348};
-let envioActual=0;
-let distanciaKm=0;
-function renderCategorias(){const d=document.getElementById("categories");d.innerHTML="";Object.keys(menuData).forEach(c=>{const b=document.createElement("button");b.className="cat-btn"+(c===categoriaActiva?" active":"");b.innerText=c;b.onclick=()=>{categoriaActiva=c;renderCategorias();renderProductos();};d.appendChild(b);});}
-function renderProductos(){const d=document.getElementById("products");d.innerHTML="";menuData[categoriaActiva].forEach((p,i)=>{const id=categoriaActiva+"_"+i;if(cantidades[id]===undefined)cantidades[id]=0;d.innerHTML+=`<div class="product-card"><img class="product-img" src="${p.img}"><div class="product-info"><div class="product-name">${p.name}</div><div class="product-desc">${p.desc}</div><div class="product-bottom"><div class="product-price">$${p.price}</div><div class="qty-control"><button class="qty-btn" onclick="cambiarQty('${id}',-1,'${p.name}',${p.price},'${p.img}')">−</button><div class="qty-num" id="qty_${id}">${cantidades[id]}</div><button class="qty-btn" onclick="cambiarQty('${id}',1,'${p.name}',${p.price},'${p.img}')">+</button></div></div></div></div>`;});}
-function cambiarQty(id,delta,nombre,precio,img){let a=cantidades[id]||0;a+=delta;if(a<0)a=0;cantidades[id]=a;const el=document.getElementById("qty_"+id);if(el)el.innerText=a;if(a===0)delete carrito[id];else carrito[id]={nombre,precio,img,cant:a};actualizarBadge();if(window.renderCart)renderCart();if(window.actualizarResumenFinal)actualizarResumenFinal();}
-function actualizarBadge(){document.getElementById("cartCount").innerText=Object.values(carrito).reduce((a,b)=>a+b.cant,0);}
-renderCategorias();renderProductos();actualizarBadge();
-</script>
-<style>
 .cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:none}.cart-overlay.show{display:block}
 .cart-modal{position:fixed;bottom:0;left:0;right:0;max-width:500px;margin:0 auto;background:#161616;border-radius:24px 24px 0 0;z-index:201;max-height:85vh;display:none;flex-direction:column;transform:translateY(100%);transition:.35s}.cart-modal.show{display:flex;transform:translateY(0)}
 .cart-header{padding:18px 20px;display:flex;justify-content:space-between;border-bottom:1px solid #2a2a2a}.cart-title{font-weight:900}.cart-close{background:#2a2a2a;border:none;width:30px;height:30px;border-radius:50%;color:#fff;font-weight:900;cursor:pointer}
 .cart-body{overflow-y:auto;padding:16px;flex:1}.cart-item{display:flex;gap:12px;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:14px;padding:10px;margin-bottom:10px;align-items:center}.cart-item img{width:50px;height:50px;border-radius:10px}.cart-item-info{flex:1}.cart-item-name{font-weight:800;font-size:13px}.cart-item-price{color:#ffcc00;font-weight:800;font-size:12px}.cart-del{background:#2a2a2a;border:none;color:#ff4d4d;width:26px;height:26px;border-radius:50%;cursor:pointer}
 .addons-title{font-weight:900;font-size:13px;margin:18px 0 10px}.addons-scroll{display:flex;gap:12px;overflow-x:auto}.addon-card{min-width:110px;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:14px;padding:8px;text-align:center;cursor:pointer}.addon-card img{width:70px;height:70px;border-radius:10px;object-fit:cover}.addon-name{font-size:11px;font-weight:800;margin-top:6px}.addon-price{font-size:11px;color:#ffcc00;font-weight:900}
 .cart-footer{padding:16px 20px;border-top:1px solid #2a2a2a;background:#1c1c1c}.btn-pedir{width:100%;background:#ffcc00;color:#111;border:none;padding:14px;border-radius:14px;font-weight:900;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="header">
+  <div id="statusBadge" class="status-neon abierto">● ABIERTO</div>
+  <div class="logo-box"><img id="logoImg" src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png"></div>
+  <div class="restaurant-name" id="restNameDisplay">BURGER <span>KINGO</span></div>
+  <div class="tagline">DOLORES HIDALGO • COMIDA RÁPIDA</div>
+</div>
+<div class="categories" id="categories"></div>
+<div class="products" id="products"></div>
+<div class="bottom-nav">
+  <button class="nav-item active"><div>🏠</div>INICIO</button>
+  <div class="nav-center-wrap" onclick="abrirAdmin()"><div class="nav-center">⚙️</div><div class="nav-center-label">ADMIN</div></div>
+  <div class="nav-item-wrapper"><button class="nav-item" onclick="abrirCarrito()"><div>🛒</div>CARRITO</button><div class="cart-badge" id="cartCount">0</div></div>
+</div>
+<script>
+let defaultMenu={
+  "Hamburguesas":[{name:"Clásica Sencilla",desc:"Carne 100% res",price:65,img:"https://images.unsplash.com/photo-1568909344668-6f14a07b56a0?w=300"},{name:"Doble Queso",desc:"Doble carne",price:95,img:"https://images.unsplash.com/photo-1550547660-d9450f859349?w=300"}],
+  "Hot Dogs":[{name:"Hot Dog Clásico",desc:"Salchicha jumbo",price:35,img:"https://images.unsplash.com/photo-1551782450-a2132b4ba21d?w=300"}],
+  "Papas":[{name:"Papas Francesa",desc:"Orden grande",price:45,img:"https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=300"}],
+  "Bebidas":[{name:"Refresco 600ml",desc:"Coca, Sprite",price:25,img:"https://images.unsplash.com/photo-1553456558-aff63285bdd1?w=300"}]
+};
+let menuData=JSON.parse(localStorage.getItem('bk_menu')||'null')||defaultMenu;
+let categoriaActiva=Object.keys(menuData)[0];
+let cantidades={};
+let carrito={};
+let restauranteCoords=JSON.parse(localStorage.getItem('bk_coords')||'null')||{lat:21.1556,lng:-100.9348};
+let config=JSON.parse(localStorage.getItem('bk_config')||'null')||{abierto:true,whatsapp:'573242827963',nombre:'BURGER KINGO',logo:'https://cdn-icons-png.flaticon.com/512/3075/3075977.png',direccionRest:'Calle Principal, Dolores Hidalgo'};
+let envioActual=0;
+let distanciaKm=0;
+function renderCategorias(){const d=document.getElementById("categories");d.innerHTML="";Object.keys(menuData).forEach(c=>{const b=document.createElement("button");b.className="cat-btn"+(c===categoriaActiva?" active":"");b.innerText=c;b.onclick=()=>{categoriaActiva=c;renderCategorias();renderProductos();};d.appendChild(b);});}
+function renderProductos(){const d=document.getElementById("products");if(!d)return;d.innerHTML="";if(!menuData[categoriaActiva]){categoriaActiva=Object.keys(menuData)[0];}menuData[categoriaActiva].forEach((p,i)=>{const id=categoriaActiva+"_"+i;if(cantidades[id]===undefined)cantidades[id]=0;d.innerHTML+=`<div class="product-card"><img class="product-img" src="${p.img}"><div class="product-info"><div class="product-name">${p.name}</div><div class="product-desc">${p.desc}</div><div class="product-bottom"><div class="product-price">$${p.price}</div><div class="qty-control"><button class="qty-btn" onclick="cambiarQty('${id}',-1,'${p.name}',${p.price},'${p.img}')">−</button><div class="qty-num" id="qty_${id}">${cantidades[id]}</div><button class="qty-btn" onclick="cambiarQty('${id}',1,'${p.name}',${p.price},'${p.img}')">+</button></div></div></div></div>`;});}
+function cambiarQty(id,delta,nombre,precio,img){let a=cantidades[id]||0;a+=delta;if(a<0)a=0;cantidades[id]=a;const el=document.getElementById("qty_"+id);if(el)el.innerText=a;if(a===0)delete carrito[id];else carrito[id]={nombre,precio,img,cant:a};actualizarBadge();if(window.renderCart)renderCart();if(window.actualizarResumenFinal)actualizarResumenFinal();}
+function actualizarBadge(){document.getElementById("cartCount").innerText=Object.values(carrito).reduce((a,b)=>a+b.cant,0);}
+function aplicarConfig(){document.getElementById("logoImg").src=config.logo;document.getElementById("restNameDisplay").innerHTML=config.nombre.includes(' ')?config.nombre.split(' ')[0]+' <span>'+config.nombre.split(' ').slice(1).join(' ')+'</span>':config.nombre;document.getElementById("pageTitle").innerText=config.nombre;const badge=document.getElementById("statusBadge");if(config.abierto){badge.className="status-neon abierto";badge.innerText="● ABIERTO";}else{badge.className="status-neon cerrado";badge.innerText="● CERRADO";}}
+renderCategorias();renderProductos();actualizarBadge();aplicarConfig();
+  </script>
+  <style>
 .checkout-modal{position:fixed;inset:0;z-index:300;display:none;flex-direction:column;max-width:500px;margin:0 auto;background:#f8f8f8;overflow-y:auto}.checkout-modal.show{display:flex}
 .checkout-header-pro{padding:18px 20px;display:flex;justify-content:space-between;align-items:center;background:#0f0f0f;position:sticky;top:0;z-index:10}.checkout-title-pro{font-weight:900;font-size:16px;color:#fff}
 .map-box-pro{margin:0;height:45vh;min-height:380px;position:relative;width:100%;flex-shrink:0}#map{height:100%;width:100%}
@@ -88,6 +93,30 @@ renderCategorias();renderProductos();actualizarBadge();
 .btn-gps-icon{width:50px;height:50px;background:#111;border:none;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
 .resumen-pro{background:#fff;margin-top:10px;padding:20px 20px 26px}.resumen-row{display:flex;justify-content:space-between;font-size:13px;color:#666;margin-bottom:10px}.resumen-row.total{color:#111;font-weight:900;font-size:18px;border-top:1px dashed #e0e0e0;padding-top:14px;margin-top:6px}.resumen-row.envio{color:#111;font-weight:700}
 .btn-whatsapp{margin:22px;background:#25D366;color:#fff;border:none;padding:18px;border-radius:16px;font-weight:900;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 10px 25px rgba(37,211,102,.4)}
+.admin-modal{position:fixed;inset:0;z-index:500;display:none;flex-direction:column;max-width:500px;margin:0 auto;background:#f5f5f5;overflow:hidden}.admin-modal.show{display:flex}
+.admin-header{background:#0f0f0f;padding:16px 20px;display:flex;justify-content:space-between;align-items:center}
+.admin-header h2{color:#fff;font-size:16px;font-weight:900}
+.admin-tabs{display:flex;background:#fff;border-bottom:1px solid #e5e5e5}
+.admin-tab{flex:1;padding:14px;text-align:center;font-size:12px;font-weight:800;cursor:pointer;color:#888;border-bottom:3px solid transparent}
+.admin-tab.active{color:#111;border-bottom-color:#ffcc00}
+.admin-body{flex:1;overflow-y:auto;padding:16px}
+.admin-card{background:#fff;border-radius:14px;padding:16px;margin-bottom:12px;border:1px solid #eee}
+.admin-input{width:100%;padding:12px 14px;border:1px solid #e5e5e5;border-radius:10px;background:#f9f9f9;margin-top:6px;font-size:14px;outline:none}
+.admin-label{font-size:11px;font-weight:800;color:#333;margin-top:12px;display:block}
+.admin-btn{width:100%;padding:13px;border:none;border-radius:12px;font-weight:900;cursor:pointer;margin-top:12px}
+.btn-yellow{background:#ffcc00;color:#111}
+.btn-dark{background:#111;color:#fff}
+.btn-red{background:#ff4444;color:#fff}
+.product-admin-item{display:flex;gap:12px;align-items:center;padding:10px;background:#fff;border-radius:12px;border:1px solid #eee;margin-bottom:10px}
+.product-admin-item img{width:50px;height:50px;border-radius:8px;object-fit:cover}
+.admin-actions{display:flex;gap:6px;margin-left:auto}
+.admin-actions button{width:30px;height:30px;border-radius:8px;border:none;cursor:pointer;font-weight:900}
+.btn-edit{background:#e8f5ff;color:#0077ff}
+.btn-del{background:#ffe8e8;color:#ff3333}
+.switch{position:relative;width:46px;height:26px;background:#ddd;border-radius:20px;cursor:pointer;transition:.2s}
+.switch.on{background:#22c55e}
+.switch-knob{position:absolute;top:2px;left:2px;width:22px;height:22px;background:#fff;border-radius:50%;transition:.2s}
+.switch.on.switch-knob{transform:translateX(20px)}
 </style>
 
 <div class="cart-overlay" id="cartOverlay" onclick="cerrarCarrito()"></div>
@@ -99,151 +128,90 @@ renderCategorias();renderProductos();actualizarBadge();
 
 <div class="checkout-modal" id="checkoutModal">
   <div class="checkout-header-pro"><div class="checkout-title-pro">📍 Datos de entrega</div><button class="cart-close" onclick="cerrarCheckout()" style="background:#2a2a2a;color:#fff">✕</button></div>
+  <div class="map-box-pro"><div id="map"></div><div class="map-info"><div><div class="map-info-label">DISTANCIA REAL</div><div class="map-info-val" id="infoKm">--</div></div><div><div class="map-info-label">ENVÍO</div><div class="map-info-val" id="infoEnvioMapa">$0</div></div><div><div class="map-info-label">RUTA</div><div class="map-info-val" style="color:#ff4444">● REAL</div></div></div></div>
+  <div class="form-section"><div class="section-label">Dirección del cliente</div><div class="input-row"><div class="input-group-pro"><label>ESCRIBE TU DIRECCIÓN</label><input id="cliDir" class="input-field-pro" placeholder="Ej: Hidalgo 45, Centro" oninput="buscarDireccion()"></div><button class="btn-gps-icon" onclick="toggleGps()"><svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2.9 2 2-.9 2-2 2zm0-10c-4.42 0-8 3.58-8 8 0 5.25 8 13 8 13s8-7.75 8-13c0-4.42-3.58-8-8-8z"/></svg></button></div></div>
+  <div class="form-section"><div class="section-label">Datos de contacto</div><div class="input-group-pro" style="margin-bottom:16px"><label>NOMBRE COMPLETO</label><input id="cliNombre" class="input-field-pro" placeholder="Juan Pérez"></div><div class="input-group-pro" style="margin-bottom:16px"><label>NÚMERO DE WHATSAPP</label><input id="cliTel" class="input-field-pro" placeholder="418 123 4567"></div><div class="input-group-pro"><label>REFERENCIA DE ENTREGA</label><input id="cliRef" class="input-field-pro" placeholder="Casa azul, portón negro..."></div></div>
+  <div class="resumen-pro"><div class="section-label">Resumen de pago</div><div class="resumen-row"><span>Productos (<span id="rCant">0</span>)</span><span id="rSub">$0</span></div><div class="resumen-row envio"><span>Envío (<span id="rKm">0.0 km</span>)</span><span id="rEnvio">$0</span></div><div class="resumen-row total"><span>Total a pagar</span><span id="rTotal">$0</span></div></div>
+  <button class="btn-whatsapp" onclick="enviarFinal()">Finalizar pedido</button><div style="height:80px"></div>
+</div>
 
-  <div class="map-box-pro">
-    <div id="map"></div>
-    <div class="map-info">
-      <div><div class="map-info-label">DISTANCIA REAL</div><div class="map-info-val" id="infoKm">--</div></div>
-      <div><div class="map-info-label">ENVÍO</div><div class="map-info-val" id="infoEnvioMapa">$0</div></div>
-      <div><div class="map-info-label">RUTA</div><div class="map-info-val" style="color:#ff4444">● REAL</div></div>
+<div class="admin-modal" id="adminModal">
+  <div class="admin-header"><h2>⚙️ Panel Administrador</h2><button class="cart-close" onclick="cerrarAdmin()" style="background:#2a2a2a;color:#fff">✕</button></div>
+  <div class="admin-tabs">
+    <div class="admin-tab active" id="tabProd" onclick="switchTab('prod')">📦 PRODUCTOS</div>
+    <div class="admin-tab" id="tabAjust" onclick="switchTab('ajust')">🔧 AJUSTES</div>
+  </div>
+  <div class="admin-body">
+    <div id="adminProductos">
+      <div class="admin-card">
+        <div style="font-weight:900;font-size:13px;margin-bottom:10px">➕ AGREGAR / EDITAR PRODUCTO</div>
+        <input type="hidden" id="editIndex">
+        <label class="admin-label">CATEGORÍA</label>
+        <div style="display:flex;gap:8px"><input id="prodCat" class="admin-input" placeholder="Ej: Hamburguesas, Bebidas" style="flex:1"><select id="catSelect" class="admin-input" style="flex:1" onchange="document.getElementById('prodCat').value=this.value"><option value="">-- Existentes --</option></select></div>
+        <label class="admin-label">NOMBRE DEL PRODUCTO</label><input id="prodName" class="admin-input" placeholder="Ej: Doble Queso">
+        <label class="admin-label">DESCRIPCIÓN</label><input id="prodDesc" class="admin-input" placeholder="Ej: Doble carne, queso cheddar">
+        <label class="admin-label">PRECIO $</label><input id="prodPrice" type="number" class="admin-input" placeholder="95">
+        <label class="admin-label">URL DE LA FOTO</label><input id="prodImg" class="admin-input" placeholder="https://...">
+        <button class="admin-btn btn-yellow" onclick="guardarProducto()">💾 Guardar Producto</button>
+        <button class="admin-btn btn-dark" onclick="limpiarFormProd()" style="margin-top:8px">Limpiar</button>
+      </div>
+      <div id="listaProductosAdmin"></div>
+    </div>
+    <div id="adminAjustes" style="display:none">
+      <div class="admin-card">
+        <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-weight:900;font-size:13px">¿NEGOCIO ABIERTO?</div><div id="switchAbierto" class="switch on" onclick="toggleAbierto()"><div class="switch-knob"></div></div></div>
+      </div>
+      <div class="admin-card">
+        <div style="font-weight:900;font-size:13px;margin-bottom:10px">📱 WhatsApp del Restaurante</div>
+        <label class="admin-label">Número (con código país)</label><input id="ajWhatsapp" class="admin-input" placeholder="573242827963">
+      </div>
+      <div class="admin-card">
+        <div style="font-weight:900;font-size:13px;margin-bottom:10px">📍 Dirección del Restaurante (Punto A)</div>
+        <label class="admin-label">Escribe dirección exacta</label><input id="ajDirRest" class="admin-input" placeholder="Ej: Morelos 15, Centro">
+        <button class="admin-btn btn-dark" onclick="actualizarDirRest()">📍 Actualizar ubicación en mapa</button>
+        <div style="font-size:11px;color:#666;margin-top:8px">Actual: <span id="coordsActual"></span></div>
+      </div>
+            <div class="admin-card">
+        <div style="font-weight:900;font-size:13px;margin-bottom:10px">🏪 Nombre y Logo</div>
+        <label class="admin-label">Nombre del negocio</label><input id="ajNombre" class="admin-input" placeholder="BURGER KINGO">
+        <label class="admin-label">URL del Logo</label><input id="ajLogo" class="admin-input" placeholder="https://...">
+      </div>
+      <button class="admin-btn btn-yellow" onclick="guardarAjustes()">💾 Guardar Todos los Ajustes</button>
     </div>
   </div>
-
-  <div class="form-section">
-    <div class="section-label">Dirección del cliente</div>
-    <div class="input-row">
-      <div class="input-group-pro"><label>ESCRIBE TU DIRECCIÓN (PUNTO B)</label><input id="cliDir" class="input-field-pro" placeholder="Ej: Hidalgo 45, Centro, Dolores Hidalgo" oninput="buscarDireccion()"></div>
-      <button class="btn-gps-icon" onclick="toggleGps()"><svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2.9 2 2-.9 2-2 2zm0-10c-4.42 0-8 3.58-8 8 0 5.25 8 13 8 13s8-7.75 8-13c0-4.42-3.58-8-8-8z"/></svg></button>
-    </div>
-  </div>
-
-  <div class="form-section">
-    <div class="section-label">Datos de contacto</div>
-    <div class="input-group-pro" style="margin-bottom:16px"><label>NOMBRE COMPLETO</label><input id="cliNombre" class="input-field-pro" placeholder="Juan Pérez"></div>
-    <div class="input-group-pro" style="margin-bottom:16px"><label>NÚMERO DE WHATSAPP</label><input id="cliTel" class="input-field-pro" placeholder="418 123 4567"></div>
-    <div class="input-group-pro"><label>REFERENCIA DE ENTREGA</label><input id="cliRef" class="input-field-pro" placeholder="Casa azul, portón negro..."></div>
-  </div>
-
-  <div class="resumen-pro">
-    <div class="section-label">Resumen de pago</div>
-    <div class="resumen-row"><span>Productos (<span id="rCant">0</span>)</span><span id="rSub">$0</span></div>
-    <div class="resumen-row envio"><span>Envío (<span id="rKm">0.0 km</span>)</span><span id="rEnvio">$0</span></div>
-    <div class="resumen-row total"><span>Total a pagar</span><span id="rTotal">$0</span></div>
-  </div>
-
-  <button class="btn-whatsapp" onclick="enviarFinal()"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M19.05 4.94A9.91 9.91 0 0012.04 2C6.58 2 2.11 6.47 2.11 12c0 1.76.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 004.74 1.2h.01c5.46 0 9.93-4.47 9.93-9.94a9.87 9.87 0 00-2.93-7.94zM12.04 20.15a8.1 8.1 0 01-4.12-1.13l-.3-.18-3.12.82.83-3.04-.2-.31a8.13 8.13 0 01-1.26-4.31c0-4.5 3.66-8.16 8.17-8.16 2.18 0 4.23.85 5.77 2.4a8.07 8.07 0 012.39 5.76c0 4.5-3.66 8.16-8.16 8.16zm4.48-6.11c-.25-.12-1.47-.73-1.7-.81-.23-.08-.39-.12-.56.12-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-2-1.24-.74-.66-1.24-1.47-1.38-1.72-.14-.25-.02-.38.1-.51.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.22.25-.86.84-.86 2.05 0 1.21.88 2.38 1 2.54.12.17 1.73 2.64 4.19 3.7.59.25 1.05.4 1.41.51.59.19 1.13.16 1.55.1.47-.07 1.47-.6 1.68-1.18.2-.58.2-1.08.14-1.18-.06-.11-.22-.17-.47-.29z"/></svg> Finalizar pedido</button>
-  <div style="height:80px"></div>
 </div>
 
 <script>
 const extras=[{name:"Refresco",price:25,img:"https://images.unsplash.com/photo-1553456558-aff63285bdd1?w=200"},{name:"Papas",price:45,img:"https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=200"}];
-let mapa=null,markerCliente=null,markerRest=null,polylineRuta=null,coordsMapa=null,debounceTimer=null,routeLayer=null;
-
+let mapa=null,markerCliente=null,markerRest=null,routeLayer=null,coordsMapa=null,debounceTimer=null;
 function calcularPrecioEnvio(km){if(km<=0)return 0;if(km<=1)return 35;let extraKm=km-1;let bloques=Math.ceil(extraKm/0.75);return 35+(bloques*5);}
-
 function renderCart(){const list=document.getElementById("cartList");const ids=Object.keys(carrito);if(ids.length===0){list.innerHTML='<div style="text-align:center;padding:20px;color:#777">Carrito vacío 🛒</div>';}else{list.innerHTML="";ids.forEach(id=>{const it=carrito[id];list.innerHTML+=`<div class="cart-item"><img src="${it.img}"><div class="cart-item-info"><div class="cart-item-name">${it.nombre} x${it.cant}</div><div class="cart-item-price">$${it.precio*it.cant}</div></div><div style="display:flex;gap:8px;align-items:center"><div class="qty-control"><button class="qty-btn" onclick="cambiarQty('${id}',-1,'${it.nombre}',${it.precio},'${it.img}')">−</button><div class="qty-num">${it.cant}</div><button class="qty-btn" onclick="cambiarQty('${id}',1,'${it.nombre}',${it.precio},'${it.img}')">+</button></div><button class="cart-del" onclick="eliminar('${id}')">🗑️</button></div></div>`;});}const addDiv=document.getElementById("addonsScroll");addDiv.innerHTML="";extras.forEach(e=>{addDiv.innerHTML+=`<div class="addon-card" onclick="addExtra('${e.name}',${e.price},'${e.img}')"><img src="${e.img}"><div class="addon-name">${e.name}</div><div class="addon-price">$${e.price}</div></div>`;});actualizarResumenFinal();}
 function addExtra(n,p,img){const id="extra_"+n;if(!carrito[id])carrito[id]={nombre:n,precio:p,img:img,cant:0};carrito[id].cant++;cantidades[id]=(cantidades[id]||0)+1;actualizarBadge();renderCart();}
 function eliminar(id){delete carrito[id];cantidades[id]=0;const el=document.getElementById("qty_"+id);if(el)el.innerText=0;actualizarBadge();renderCart();}
-
 window.abrirCarrito=function(){document.getElementById("cartOverlay").classList.add("show");document.getElementById("cartModal").classList.add("show");renderCart();}
 window.cerrarCarrito=function(){document.getElementById("cartOverlay").classList.remove("show");document.getElementById("cartModal").classList.remove("show");}
-window.abrirCheckout=function(){if(Object.keys(carrito).length===0){alert("Agrega productos");return;}cerrarCarrito();document.getElementById("checkoutModal").classList.add("show");setTimeout(()=>{initMap();},300);}
+window.abrirCheckout=function(){if(!config.abierto){alert("⛔ Negocio cerrado por el momento");return;}if(Object.keys(carrito).length===0){alert("Agrega productos");return;}cerrarCarrito();document.getElementById("checkoutModal").classList.add("show");setTimeout(()=>{initMap();},300);}
 window.cerrarCheckout=function(){document.getElementById("checkoutModal").classList.remove("show");}
-
-function initMap(){
-  if(mapa){setTimeout(()=>{mapa.invalidateSize();},200);return;}
-  mapa=L.map('map',{zoomControl:false}).setView([restauranteCoords.lat,restauranteCoords.lng],14);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapa);
-  L.control.zoom({position:'bottomright'}).addTo(mapa);
-  // Restaurante interno - no popup al inicio, solo marcador oculto interno
-  markerRest=L.marker([restauranteCoords.lat,restauranteCoords.lng],{icon:L.icon({iconUrl:'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',shadowUrl:'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7/images/marker-shadow.png',iconSize:[25,41],iconAnchor:[12,41]})}).addTo(mapa);
-}
-
-function trazarRutaReal(clienteLat, clienteLng){
-  const url=`https://router.project-osrm.org/route/v1/driving/${restauranteCoords.lng},${restauranteCoords.lat};${clienteLng},${clienteLat}?overview=full&geometries=geojson`;
-  fetch(url).then(r=>r.json()).then(data=>{
-    if(data.routes && data.routes.length>0){
-      const ruta=data.routes[0];
-      distanciaKm=ruta.distance/1000;
-      envioActual=calcularPrecioEnvio(distanciaKm);
-      if(routeLayer) mapa.removeLayer(routeLayer);
-      if(markerCliente) mapa.removeLayer(markerCliente);
-      // Marcador cliente
-      markerCliente=L.marker([clienteLat,clienteLng],{icon:L.icon({iconUrl:'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',shadowUrl:'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7/images/marker-shadow.png',iconSize:[25,41],iconAnchor:[12,41]})}).addTo(mapa);
-      // Ruta real roja elegante
-      const coords=ruta.geometry.coordinates.map(c=>[c[1],c[0]]);
-      routeLayer=L.polyline(coords,{color:'#ff0000',weight:6,opacity:0.9,lineJoin:'round'}).addTo(mapa);
-      mapa.fitBounds(routeLayer.getBounds(),{padding:[50,50]});
-      actualizarInfoMapa();
-      actualizarResumenFinal();
-    }
-  }).catch(()=>{
-    // Fallback linea recta si falla OSRM
-    distanciaKm= (function(lat1,lon1,lat2,lon2){const R=6371;const dLat=(lat2-lat1)*Math.PI/180;const dLon=(lon2-lon1)*Math.PI/180;const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));})(restauranteCoords.lat,restauranteCoords.lng,clienteLat,clienteLng);
-    envioActual=calcularPrecioEnvio(distanciaKm);
-    if(routeLayer) mapa.removeLayer(routeLayer);
-    if(markerCliente) mapa.removeLayer(markerCliente);
-    markerCliente=L.marker([clienteLat,clienteLng]).addTo(mapa);
-    routeLayer=L.polyline([[restauranteCoords.lat,restauranteCoords.lng],[clienteLat,clienteLng]],{color:'#ff0000',weight:6}).addTo(mapa);
-    actualizarInfoMapa();actualizarResumenFinal();
-  });
-}
-
-window.buscarDireccion=function(){
-  const dir=document.getElementById("cliDir").value.trim();
-  if(dir.length<6)return;
-  clearTimeout(debounceTimer);
-  debounceTimer=setTimeout(()=>{
-    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(dir+", Dolores Hidalgo")}&limit=1`).then(r=>r.json()).then(d=>{
-      if(d.length>0){
-        const lat=parseFloat(d[0].lat),lon=parseFloat(d[0].lon);
-        coordsMapa={lat:lat,lng:lon};
-        trazarRutaReal(lat,lon);
-      }
-    });
-  },900);
-}
-
+function initMap(){if(mapa){setTimeout(()=>{mapa.invalidateSize();},200);return;}mapa=L.map('map',{zoomControl:false}).setView([restauranteCoords.lat,restauranteCoords.lng],14);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(mapa);L.control.zoom({position:'bottomright'}).addTo(mapa);markerRest=L.marker([restauranteCoords.lat,restauranteCoords.lng],{icon:L.icon({iconUrl:'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',shadowUrl:'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7/images/marker-shadow.png',iconSize:[25,41],iconAnchor:[12,41]})}).addTo(mapa).bindPopup("PUNTO A - Restaurante");}
+function trazarRutaReal(cLat,cLng){const url=`https://router.project-osrm.org/route/v1/driving/${restauranteCoords.lng},${restauranteCoords.lat};${cLng},${cLat}?overview=full&geometries=geojson`;fetch(url).then(r=>r.json()).then(data=>{if(data.routes&&data.routes.length>0){const ruta=data.routes[0];distanciaKm=ruta.distance/1000;envioActual=calcularPrecioEnvio(distanciaKm);if(routeLayer)mapa.removeLayer(routeLayer);if(markerCliente)mapa.removeLayer(markerCliente);markerCliente=L.marker([cLat,cLng],{icon:L.icon({iconUrl:'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',shadowUrl:'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7/images/marker-shadow.png',iconSize:[25,41],iconAnchor:[12,41]})}).addTo(mapa);const coords=ruta.geometry.coordinates.map(c=>[c[1],c[0]]);routeLayer=L.polyline(coords,{color:'#ff0000',weight:6,opacity:0.9}).addTo(mapa);mapa.fitBounds(routeLayer.getBounds(),{padding:[50,50]});actualizarInfoMapa();actualizarResumenFinal();}});}
+window.buscarDireccion=function(){const dir=document.getElementById("cliDir").value.trim();if(dir.length<6)return;clearTimeout(debounceTimer);debounceTimer=setTimeout(()=>{fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(dir+", Dolores Hidalgo")}&limit=1`).then(r=>r.json()).then(d=>{if(d.length>0){const lat=parseFloat(d[0].lat),lon=parseFloat(d[0].lon);coordsMapa={lat:lat,lng:lon};trazarRutaReal(lat,lon);}});},900);}
 function actualizarInfoMapa(){document.getElementById("infoKm").innerText=distanciaKm.toFixed(2)+" km";document.getElementById("infoEnvioMapa").innerText="$"+envioActual;document.getElementById("rKm").innerText=distanciaKm.toFixed(2)+" km";}
-
-window.toggleGps=function(){
-  navigator.geolocation.getCurrentPosition(p=>{
-    const lat=p.coords.latitude,lng=p.coords.longitude;
-    coordsMapa={lat:lat,lng:lng};
-    trazarRutaReal(lat,lng);
-    document.getElementById("cliDir").value="Mi ubicación GPS";
-  },()=>{alert("Activa GPS");});
-}
-
-window.actualizarResumenFinal=function(){
-  const cant=Object.values(carrito).reduce((a,b)=>a+b.cant,0);
-  const sub=Object.values(carrito).reduce((a,b)=>a+(b.precio*b.cant),0);
-  const total=sub+envioActual;
-  const e1=document.getElementById("rCant");
-  if(e1){
-    e1.innerText=cant;
-    document.getElementById("rSub").innerText="$"+sub;
-    document.getElementById("rEnvio").innerText="$"+envioActual;
-    document.getElementById("rTotal").innerText="$"+total;
-    document.getElementById("rKm").innerText=distanciaKm.toFixed(2)+" km";
-  }
-}
-
-window.enviarFinal=function(){
-  const nom=document.getElementById("cliNombre").value.trim();
-  const tel=document.getElementById("cliTel").value.trim();
-  const dir=document.getElementById("cliDir").value.trim();
-  const ref=document.getElementById("cliRef").value.trim();
-  if(!nom||!tel||!dir){alert("Llena nombre, teléfono y dirección");return;}
-  if(!coordsMapa){alert("Escribe dirección válida para trazar ruta");return;}
-  const sub=Object.values(carrito).reduce((a,b)=>a+(b.precio*b.cant),0);
-  const total=sub+envioActual;
-  let msg=`*PEDIDO BURGER KINGO* 🍔\n\n👤 ${nom}\n📱 ${tel}\n🏠 Punto B Cliente: ${dir}\n📍 Ref: ${ref||"Sin referencia"}\n📏 Distancia real moto: ${distanciaKm.toFixed(2)} km\n🛵 Envío: $${envioActual}\n\n🛒 Productos:\n`;
-  Object.values(carrito).forEach(i=>msg+=`• ${i.nombre} x${i.cant} = $${i.precio*i.cant}\n`);
-  msg+=`\nSubtotal: $${sub}\nEnvío: $${envioActual}\n💰 TOTAL: $${total}\n\n📍 Ruta real A→B moto:\nhttps://www.google.com/maps/dir/${restauranteCoords.lat},${restauranteCoords.lng}/${coordsMapa.lat},${coordsMapa.lng}\n`;
-  window.open("https://wa.me/573242827963?text="+encodeURIComponent(msg),"_blank");
-}
+window.toggleGps=function(){navigator.geolocation.getCurrentPosition(p=>{const lat=p.coords.latitude,lng=p.coords.longitude;coordsMapa={lat:lat,lng:lng};trazarRutaReal(lat,lng);document.getElementById("cliDir").value="Mi ubicación GPS";},()=>{alert("Activa GPS");});}
+window.actualizarResumenFinal=function(){const cant=Object.values(carrito).reduce((a,b)=>a+b.cant,0);const sub=Object.values(carrito).reduce((a,b)=>a+(b.precio*b.cant),0);const total=sub+envioActual;const e1=document.getElementById("rCant");if(e1){e1.innerText=cant;document.getElementById("rSub").innerText="$"+sub;document.getElementById("rEnvio").innerText="$"+envioActual;document.getElementById("rTotal").innerText="$"+total;document.getElementById("rKm").innerText=distanciaKm.toFixed(2)+" km";}}
+window.enviarFinal=function(){const nom=document.getElementById("cliNombre").value.trim();const tel=document.getElementById("cliTel").value.trim();const dir=document.getElementById("cliDir").value.trim();const ref=document.getElementById("cliRef").value.trim();if(!nom||!tel||!dir){alert("Llena nombre, teléfono y dirección");return;}if(!coordsMapa){alert("Escribe dirección válida");return;}const sub=Object.values(carrito).reduce((a,b)=>a+(b.precio*b.cant),0);const total=sub+envioActual;let msg=`*PEDIDO ${config.nombre}* 🍔\n\n👤 ${nom}\n📱 ${tel}\n🏠 ${dir}\n📍 Ref: ${ref||"Sin referencia"}\n📏 ${distanciaKm.toFixed(2)} km\n🛵 Envío: $${envioActual}\n\n🛒 Productos:\n`;Object.values(carrito).forEach(i=>msg+=`• ${i.nombre} x${i.cant} = $${i.precio*i.cant}\n`);msg+=`\nSubtotal: $${sub}\nEnvío: $${envioActual}\n💰 TOTAL: $${total}\n\n📍 Ruta:\nhttps://www.google.com/maps/dir/${restauranteCoords.lat},${restauranteCoords.lng}/${coordsMapa.lat},${coordsMapa.lng}\n`;window.open("https://wa.me/"+config.whatsapp+"?text="+encodeURIComponent(msg),"_blank");}
 renderCart();
+window.abrirAdmin=function(){document.getElementById("adminModal").classList.add("show");cargarAdmin();}
+window.cerrarAdmin=function(){document.getElementById("adminModal").classList.remove("show");}
+window.switchTab=function(t){document.getElementById("tabProd").classList.remove("active");document.getElementById("tabAjust").classList.remove("active");document.getElementById("adminProductos").style.display="none";document.getElementById("adminAjustes").style.display="none";if(t==='prod'){document.getElementById("tabProd").classList.add("active");document.getElementById("adminProductos").style.display="block";}else{document.getElementById("tabAjust").classList.add("active");document.getElementById("adminAjustes").style.display="block";}}
+function cargarAdmin(){const sel=document.getElementById("catSelect");sel.innerHTML='<option value="">-- Existentes --</option>';Object.keys(menuData).forEach(c=>{sel.innerHTML+=`<option value="${c}">${c}</option>`;});renderListaAdmin();document.getElementById("ajWhatsapp").value=config.whatsapp;document.getElementById("ajNombre").value=config.nombre;document.getElementById("ajLogo").value=config.logo;document.getElementById("ajDirRest").value=config.direccionRest;document.getElementById("coordsActual").innerText=restauranteCoords.lat.toFixed(5)+", "+restauranteCoords.lng.toFixed(5);const sw=document.getElementById("switchAbierto");if(config.abierto){sw.classList.add("on");}else{sw.classList.remove("on");}}
+function renderListaAdmin(){const div=document.getElementById("listaProductosAdmin");div.innerHTML="";Object.keys(menuData).forEach(cat=>{div.innerHTML+=`<div style="font-weight:900;font-size:12px;margin:14px 0 6px;color:#111">${cat}</div>`;menuData[cat].forEach((p,idx)=>{div.innerHTML+=`<div class="product-admin-item"><img src="${p.img}"><div style="flex:1"><div style="font-weight:800;font-size:13px;color:#111">${p.name}</div><div style="font-size:11px;color:#666">$${p.price} - ${p.desc}</div></div><div class="admin-actions"><button class="btn-edit" onclick="editarProd('${cat}',${idx})">✏️</button><button class="btn-del" onclick="borrarProd('${cat}',${idx})">🗑️</button></div></div>`;});});}
+window.guardarProducto=function(){const cat=document.getElementById("prodCat").value.trim();const name=document.getElementById("prodName").value.trim();const desc=document.getElementById("prodDesc").value.trim();const price=parseFloat(document.getElementById("prodPrice").value);const img=document.getElementById("prodImg").value.trim();const editIdx=document.getElementById("editIndex").value;if(!cat||!name||!price||!img){alert("Llena categoría, nombre, precio y foto");return;}if(!menuData[cat])menuData[cat]=[];if(editIdx!==""){const [oldCat,oldIdx]=editIdx.split('|');if(oldCat!==cat){menuData[oldCat].splice(parseInt(oldIdx),1);if(menuData[oldCat].length===0)delete menuData[oldCat];menuData[cat].push({name,desc,price,img});}else{menuData[cat][parseInt(oldIdx)]={name,desc,price,img};}}else{menuData[cat].push({name,desc,price,img});}localStorage.setItem('bk_menu',JSON.stringify(menuData));renderCategorias();renderProductos();cargarAdmin();limpiarFormProd();alert("✅ Producto guardado");}
+window.editarProd=function(cat,idx){const p=menuData[cat][idx];document.getElementById("prodCat").value=cat;document.getElementById("prodName").value=p.name;document.getElementById("prodDesc").value=p.desc;document.getElementById("prodPrice").value=p.price;document.getElementById("prodImg").value=p.img;document.getElementById("editIndex").value=cat+"|"+idx;switchTab('prod');}
+window.borrarProd=function(cat,idx){if(!confirm("¿Borrar "+menuData[cat][idx].name+"?"))return;menuData[cat].splice(idx,1);if(menuData[cat].length===0)delete menuData[cat];localStorage.setItem('bk_menu',JSON.stringify(menuData));categoriaActiva=Object.keys(menuData)[0]||'';renderCategorias();renderProductos();renderListaAdmin();}
+window.limpiarFormProd=function(){document.getElementById("prodCat").value="";document.getElementById("prodName").value="";document.getElementById("prodDesc").value="";document.getElementById("prodPrice").value="";document.getElementById("prodImg").value="";document.getElementById("editIndex").value="";}
+window.toggleAbierto=function(){config.abierto=!config.abierto;const sw=document.getElementById("switchAbierto");if(config.abierto)sw.classList.add("on");else sw.classList.remove("on");aplicarConfig();}
+window.actualizarDirRest=function(){const dir=document.getElementById("ajDirRest").value.trim();if(dir.length<6){alert("Escribe dirección");return;}fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(dir)}&limit=1`).then(r=>r.json()).then(d=>{if(d.length>0){restauranteCoords={lat:parseFloat(d[0].lat),lng:parseFloat(d[0].lon)};localStorage.setItem('bk_coords',JSON.stringify(restauranteCoords));document.getElementById("coordsActual").innerText=restauranteCoords.lat.toFixed(5)+", "+restauranteCoords.lng.toFixed(5);alert("✅ Ubicación actualizada: "+d[0].display_name);if(mapa){markerRest.setLatLng([restauranteCoords.lat,restauranteCoords.lng]);}}else{alert("No se encontró dirección");}});}
+window.guardarAjustes=function(){config.whatsapp=document.getElementById("ajWhatsapp").value.trim()||config.whatsapp;config.nombre=document.getElementById("ajNombre").value.trim()||config.nombre;config.logo=document.getElementById("ajLogo").value.trim()||config.logo;config.direccionRest=document.getElementById("ajDirRest").value.trim()||config.direccionRest;localStorage.setItem('bk_config',JSON.stringify(config));localStorage.setItem('bk_coords',JSON.stringify(restauranteCoords));aplicarConfig();alert("✅ Ajustes guardados");}
 </script>
 </body>
 </html>
