@@ -73,6 +73,8 @@ body{background:#0f0f0f;color:#fff;padding-bottom:90px}
 .login-btn{width:100%;background:#111;color:#fff;border:none;padding:15px;border-radius:14px;font-weight:900;font-size:15px;cursor:pointer;margin-top:8px}
 .horario-row{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #f0f0f0}.horario-dia{width:70px;font-weight:900;font-size:12px;color:#111}
 .horario-check{width:18px;height:18px}.horario-input{flex:1;padding:8px;border:1px solid #e5e5e5;border-radius:8px;font-size:12px;background:#f9f9f9}
+.pass-wrap{position:relative}
+.eye-btn{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:#fff;border:1px solid #eee;width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px}
 </style>
 </head>
 <body>
@@ -90,7 +92,7 @@ body{background:#0f0f0f;color:#fff;padding-bottom:90px}
 <div class="nav-item-wrapper"><button class="nav-item" onclick="abrirCarrito()"><div>🛒</div>CARRITO</button><div class="cart-badge" id="cartCount">0</div></div>
 </div>
 <div class="elegant-overlay" id="elegantOverlay" onclick="cerrarElegant()"><div class="elegant-card" onclick="event.stopPropagation()"><div class="elegant-icon">📋</div><div class="elegant-title" id="elegantTitle">Faltan datos</div><div class="elegant-text" id="elegantText">...</div><button class="elegant-btn" onclick="cerrarElegant()">Entendido</button></div></div>
-<div class="login-overlay" id="loginOverlay"><div class="login-card"><div class="login-logo"><img id="loginLogoImg" src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png"></div><div class="login-title" id="loginTitle">BURGER KINGO</div><div class="login-sub">PANEL ADMINISTRADOR</div><input id="loginUser" class="login-input" placeholder="👤 Usuario"><input id="loginPass" type="password" class="login-input" placeholder="🔒 Contraseña"><button class="login-btn" onclick="hacerLogin()">Ingresar →</button><button onclick="cerrarLogin()" style="margin-top:12px;background:none;border:none;color:#888;font-size:12px;font-weight:700;cursor:pointer">Cancelar</button></div></div>
+<div class="login-overlay" id="loginOverlay"><div class="login-card"><div class="login-logo"><img id="loginLogoImg" src="https://cdn-icons-png.flaticon.com/512/3075/3075977.png"></div><div class="login-title" id="loginTitle">BURGER KINGO</div><div class="login-sub">PANEL ADMINISTRADOR</div><input id="loginUser" class="login-input" placeholder="👤 Usuario"><div class="pass-wrap"><input id="loginPass" type="password" class="login-input" placeholder="🔒 Contraseña" style="margin-bottom:12px;padding-right:50px"><button class="eye-btn" type="button" onclick="togglePass('loginPass',this)">👁️</button></div><button class="login-btn" onclick="hacerLogin()">Ingresar →</button><button onclick="cerrarLogin()" style="margin-top:12px;background:none;border:none;color:#888;font-size:12px;font-weight:700;cursor:pointer">Cancelar</button></div></div>
 <style>
 .checkout-modal{position:fixed;inset:0;z-index:300;display:none;flex-direction:column;max-width:500px;margin:0 auto;background:#f8f8f8;overflow-y:auto}.checkout-modal.show{display:flex}
 .checkout-header-pro{padding:18px 20px;display:flex;justify-content:space-between;align-items:center;background:#0f0f0f;position:sticky;top:0;z-index:10}.checkout-title-pro{font-weight:900;font-size:16px;color:#fff}
@@ -105,7 +107,7 @@ body{background:#0f0f0f;color:#fff;padding-bottom:90px}
 .btn-whatsapp:disabled{background:#ccc;color:#888;cursor:not-allowed}
 .admin-modal{position:fixed;inset:0;z-index:500;display:none;flex-direction:column;max-width:500px;margin:0 auto;background:#f5f5f5;overflow:hidden}.admin-modal.show{display:flex}
 .admin-header{background:#0f0f0f;padding:16px 20px;display:flex;justify-content:space-between;align-items:center}.admin-header h2{color:#fff;font-size:16px;font-weight:900}
-.admin-tabs{display:flex;background:#fff;border-bottom:1px solid #e5e5e5;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;gap:0}
+.admin-tabs{display:flex;background:#fff;border-bottom:1px solid #e5e5e5;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .admin-tabs::-webkit-scrollbar{display:none}
 .admin-tab{flex:0 0 auto;min-width:115px;padding:14px 18px;text-align:center;font-size:11px;font-weight:800;cursor:pointer;color:#888;border-bottom:3px solid transparent;white-space:nowrap}
 .admin-tab.active{color:#111;border-bottom-color:var(--theme)}
@@ -181,7 +183,7 @@ body{background:#0f0f0f;color:#fff;padding-bottom:90px}
 <div class="admin-card" style="border:2px solid #111">
 <div style="font-weight:900;font-size:13px;margin-bottom:12px">🔐 SEGURIDAD ADMIN</div>
 <label class="admin-label">Nuevo Usuario</label><input id="ajUser" class="admin-input" placeholder="admin">
-<label class="admin-label">Nueva Contraseña</label><input id="ajPass" type="text" class="admin-input" placeholder="1234">
+<label class="admin-label">Nueva Contraseña</label><div class="pass-wrap"><input id="ajPass" type="password" class="admin-input" placeholder="1234" style="padding-right:50px"><button class="eye-btn" type="button" onclick="togglePass('ajPass',this)">👁️</button></div>
 </div>
 <div class="admin-card"><div style="font-weight:900;font-size:13px;margin-bottom:10px">📱 WhatsApp</div><input id="ajWhatsapp" class="admin-input"></div>
 <div class="admin-card"><div style="font-weight:900;font-size:13px;margin-bottom:10px">📍 Dirección Restaurante</div><input id="ajDirRest" class="admin-input"><button class="admin-btn btn-dark" onclick="actualizarDirRest()">📍 Actualizar ubicación</button><div style="font-size:11px;color:#666;margin-top:8px">Actual: <span id="coordsActual"></span></div></div>
@@ -210,24 +212,23 @@ body{background:#0f0f0f;color:#fff;padding-bottom:90px}
 <div class="stat-grid"><div class="stat-card"><div class="stat-num" id="statTotalPed">0</div><div class="stat-label">PEDIDOS</div></div><div class="stat-card"><div class="stat-num" id="statVentas">$0</div><div class="stat-label">VENTAS</div></div><div class="stat-card"><div class="stat-num" id="statProdVend">0</div><div class="stat-label">PRODUCTOS</div></div><div class="stat-card"><div class="stat-num" id="statTicket">$0</div><div class="stat-label">TICKET PROM</div></div></div>
 <div class="admin-card"><div style="font-weight:900;font-size:12px">🏆 Más vendido</div><div id="statTopProd" style="margin-top:8px;font-size:13px;color:#111">--</div></div>
 <div class="admin-card" style="border:2px solid #ff4444">
-<div style="font-weight:900;font-size:13px;color:#ff4444;margin-bottom:8px">🗑️ Zona de peligro - Estadísticas</div>
-<div style="font-size:11px;color:#666;margin-bottom:12px">Borra solo pedidos y estadísticas. NO borra el panel Desarrollador.</div>
+<div style="font-weight:900;font-size:13px;color:#ff4444;margin-bottom:8px">🗑️ Zona de peligro</div>
+<div style="font-size:11px;color:#666;margin-bottom:12px">Borra solo pedidos y estadísticas.</div>
 <button class="admin-btn" style="background:#ffe8e8;color:#ff4444;border:1px solid #ffcccc" onclick="borrarEstadisticas()">🗑️ Borrar Historial / Estadísticas</button>
 </div>
 </div>
 
 <div id="adminDev" style="display:none">
 <div class="admin-card" style="border:2px solid #111;background:#0f0f0f">
-<div style="font-weight:900;font-size:13px;color:#fff;margin-bottom:2px">⚙️ Panel Desarrollador</div>
-<div style="font-size:10px;color:#666;margin-bottom:12px">Acceso técnico / logs - Independiente</div>
+<div style="font-weight:900;font-size:13px;color:#fff;margin-bottom:2px">⚙️ Panel desarrollador</div>
+<div style="font-size:10px;color:#666;margin-bottom:12px">Acceso técnico / logs</div>
 <div style="display:flex;gap:8px">
-<input id="passClientes" type="password" class="admin-input" placeholder="Código dev" style="margin-top:0;flex:1;background:#1a1a1a;color:#fff;border-color:#2a2a2a">
+<div class="pass-wrap" style="flex:1"><input id="passClientes" type="password" class="admin-input" placeholder="Código dev" style="margin-top:0;background:#1a1a1a;color:#fff;border-color:#2a2a2a;padding-right:50px"><button class="eye-btn" type="button" onclick="togglePass('passClientes',this)" style="background:#2a2a2a;border-color:#3a3a3a">👁️</button></div>
 <button onclick="verClientesPrivados()" style="background:#2a2a2a;color:#fff;border:1px solid #3a3a3a;padding:0 18px;border-radius:10px;font-weight:900;cursor:pointer">Entrar</button>
 </div>
 <div id="listaClientesPrivada" style="display:none;margin-top:14px;max-height:500px;overflow-y:auto"></div>
 <div id="devExtraActions" style="display:none;margin-top:14px">
-<button class="admin-btn" style="background:#1a1a1a;color:#ffcc00;border:1px solid #2a2a2a" onclick="borrarDevLogs()">🗑️ Borrar logs de Desarrollador</button>
-<div style="font-size:9px;color:#555;margin-top:8px;text-align:center">Solo borra dev, no afecta pedidos</div>
+<button class="admin-btn" style="background:#1a1a1a;color:#ffcc00;border:1px solid #2a2a2a" onclick="borrarDevLogs()">🗑️ Borrar logs de desarrollador</button>
 </div>
 </div>
 </div>
@@ -280,6 +281,7 @@ db.ref('coords').on('value',snap=>{if(snap.val()){restauranteCoords=snap.val();}
 db.ref('admin').on('value',snap=>{if(snap.val())adminCred=snap.val();});
 </script>
 <script>
+function togglePass(id,btn){const inp=document.getElementById(id);if(inp.type==="password"){inp.type="text";btn.innerText="🙈";}else{inp.type="password";btn.innerText="👁️";}}
 function showElegant(titulo,texto){document.getElementById("elegantTitle").innerText=titulo;document.getElementById("elegantText").innerText=texto;document.getElementById("elegantOverlay").classList.add("show");}
 function cerrarElegant(){document.getElementById("elegantOverlay").classList.remove("show");}
 function renderCategorias(){const d=document.getElementById("categories");d.innerHTML="";Object.keys(menuData).forEach(c=>{const b=document.createElement("button");b.className="cat-btn"+(c===categoriaActiva?" active":"");b.innerText=c;b.onclick=()=>{categoriaActiva=c;renderCategorias();renderProductos();};d.appendChild(b);});}
@@ -348,8 +350,8 @@ html+=`<div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10p
 });
 cont.innerHTML=html;
 });}
-window.borrarEstadisticas=function(){if(!confirm("¿Seguro que quieres borrar TODO el historial de pedidos y estadísticas? Esto NO borrará el panel Desarrollador."))return;db.ref('pedidos').remove().then(()=>{showElegant("Borrado ✅","Historial de pedidos y estadísticas borrado. Dev sigue intacto.");});}
-window.borrarDevLogs=function(){if(!confirm("¿Borrar solo logs de Desarrollador? Pedidos y stats seguirán."))return;db.ref('dev_clientes').remove().then(()=>{document.getElementById("listaClientesPrivada").innerHTML='<div style="text-align:center;padding:10px;color:#888">Logs borrados</div>';showElegant("Dev borrado ✅","Logs de desarrollador borrados.");});}
+window.borrarEstadisticas=function(){if(!confirm("¿Seguro que quieres borrar TODO el historial de pedidos y estadísticas?"))return;db.ref('pedidos').remove().then(()=>{showElegant("Borrado ✅","Historial de pedidos y estadísticas borrado.");});}
+window.borrarDevLogs=function(){if(!confirm("¿Borrar solo logs de Desarrollador?"))return;db.ref('dev_clientes').remove().then(()=>{document.getElementById("listaClientesPrivada").innerHTML='<div style="text-align:center;padding:10px;color:#888">Logs borrados</div>';showElegant("Dev borrado ✅","Logs de desarrollador borrados.");});}
 function cargarStats(){db.ref('pedidos').on('value',snap=>{const data=snap.val();const pedidos=data?Object.values(data):[];let totalV=pedidos.reduce((a,b)=>a+b.total,0);let totalP=pedidos.reduce((a,b)=>a+b.productos.reduce((x,y)=>x+y.cant,0),0);document.getElementById("statTotalPed").innerText=pedidos.length;document.getElementById("statVentas").innerText="$"+totalV;document.getElementById("statProdVend").innerText=totalP;document.getElementById("statTicket").innerText=pedidos.length? "$"+Math.round(totalV/pedidos.length):"$0";let conteo={};pedidos.forEach(p=>{p.productos.forEach(pr=>{conteo[pr.nombre]=(conteo[pr.nombre]||0)+pr.cant;});});let top=Object.entries(conteo).sort((a,b)=>b[1]-a[1])[0];document.getElementById("statTopProd").innerText=top? top[0]+" ("+top[1]+" vendidos)" : "--";});}
 function cargarAdmin(){const sel=document.getElementById("catSelect");sel.innerHTML='<option value="">-- Categorías --</option>';Object.keys(menuData).forEach(c=>{sel.innerHTML+=`<option value="${c}">${c}</option>`;});renderListaAdmin();document.getElementById("ajWhatsapp").value=config.whatsapp;document.getElementById("ajNombre").value=config.nombre;document.getElementById("ajColor").value=config.color;document.getElementById("ajDirRest").value=config.direccionRest;document.getElementById("ajUser").value=adminCred.user;document.getElementById("ajPass").value=adminCred.pass;document.getElementById("coordsActual").innerText=restauranteCoords.lat.toFixed(5)+", "+restauranteCoords.lng.toFixed(5);renderHorario();}
 function renderListaAdmin(){const div=document.getElementById("listaProductosAdmin");div.innerHTML="";Object.keys(menuData).forEach(cat=>{div.innerHTML+=`<div style="font-weight:900;font-size:12px;margin:14px 0 6px;color:#111">${cat.toUpperCase()}</div>`;menuData[cat].forEach((p,idx)=>{const safeCat=cat.replace(/'/g,"\\'");const disp=p.disp!==false;div.innerHTML+=`<div class="product-admin-item"><img src="${p.img}"><div style="flex:1"><div style="font-weight:800;font-size:13px;color:#111">${p.name}</div><div style="font-size:11px;color:#666">$${p.price}</div></div><div class="admin-actions"><button class="btn-disp ${disp?'on':'off'}" onclick="toggleDisp('${safeCat}',${idx})">${disp?'🟢':'🔴'}</button><button class="btn-edit" onclick="editarProd('${safeCat}',${idx})">✏️</button><button class="btn-del" onclick="borrarProd('${safeCat}',${idx})">🗑️</button></div></div>`;});});}
